@@ -55,3 +55,13 @@ func (c *Cell) getLinks() []*Cell {
 
 	return cellLinks
 }
+
+func (c *Cell) isLinked(cell *Cell) bool {
+	_, ok := c.links[cell]
+
+	return ok
+}
+
+func (c *Cell) neighbors() []*Cell {
+	return []*Cell{c.north, c.south, c.east, c.west}
+}
