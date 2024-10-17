@@ -65,3 +65,14 @@ func (c *Cell) isLinked(cell *Cell) bool {
 func (c *Cell) neighbors() []*Cell {
 	return []*Cell{c.north, c.south, c.east, c.west}
 }
+
+func (c *Cell) distances() *Distances {
+	distances := CreateDistances(c)
+	frontier := []*Cell{c}
+
+	for len(frontier) > 0 {
+
+	}
+
+	return distances
+}
