@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+// functions that do the same thing for all gird types should be a function that takes in a grid interface and changes it not a reciever function
+// functions that would be traditionally overloaded can be part of an interface
+
 type Grid struct {
 	rows    int
 	columns int
