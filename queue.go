@@ -1,16 +1,16 @@
 package main
 
 type CellQueue struct {
-	elements chan interface{}
+	elements chan *Cell
 }
 
-func NewQueue(size int) *CellQueue {
+func CreateQueue(size int) *CellQueue {
 	return &CellQueue{
-		elements: make(chan interface{}, size),
+		elements: make(chan *Cell, size),
 	}
 }
 
-func (queue *CellQueue) Push(element interface{}) {
+func (queue *CellQueue) Push(element *Cell) {
 	select {
 	case queue.elements <- element:
 	default:
@@ -18,11 +18,11 @@ func (queue *CellQueue) Push(element interface{}) {
 	}
 }
 
-func (queue *CellQueue) Pop() interface{} {
+func (queue *CellQueue) Pop() *Cell {
 	select {
 	case e := <-queue.elements:
 		return e
 	default:
-		panic("Queue empty")
+		return nil
 	}
 }

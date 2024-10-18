@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Cell struct {
 	row    int
 	column int
@@ -68,9 +70,36 @@ func (c *Cell) neighbors() []*Cell {
 
 func (c *Cell) distances() *Distances {
 	distances := CreateDistances(c)
-	frontier := []*Cell{c}
 
-	for len(frontier) > 0 {
+	// may have to change
+	frontier := CreateQueue(20)
+
+	currentCell := c
+	distances.cells[currentCell] = 0
+
+	for currentCell != nil {
+		// may have to change
+		newFrontier := CreateQueue(20)
+
+		for currentCell != nil {
+
+			for key, _ := range currentCell.links {
+
+				_, ok := distances.cells[key]
+				if !ok {
+					newFrontier.Push(key)
+					distances.cells[key] = distances.cells[currentCell] + 1
+				}
+
+			}
+
+			currentCell = frontier.Pop()
+
+			fmt.Println(currentCell)
+		}
+
+		frontier = newFrontier
+		currentCell = frontier.Pop()
 
 	}
 
