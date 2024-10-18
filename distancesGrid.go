@@ -1,9 +1,5 @@
 package main
 
-import (
-	"strconv"
-)
-
 type DistancesGrid struct {
 	*Distances
 }
@@ -23,6 +19,6 @@ func (dg *DistancesGrid) cellContents(cell *Cell) string {
 	if dg.Distances == nil {
 		panic("distances were not initialized")
 	} else {
-		return strconv.Itoa(dg.Distances.cells[cell])
+		return string(IntToBase61(dg.Distances.cells[cell]))
 	}
 }
