@@ -5,9 +5,13 @@ import "fmt"
 func main() {
 	fmt.Println("Sup")
 
-	grid1 := CreateGrid(4, 4)
+	grid1 := CreateDistancesGrid(4, 4)
+
+	distanceGrid := grid1.SpecialGrid.(*DistancesGrid)
 
 	Sidewinder(grid1)
+
+	distanceGrid.Distances = grid1.grid[0][0].distances()
 
 	grid1.print()
 

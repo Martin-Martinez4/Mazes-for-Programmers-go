@@ -87,6 +87,7 @@ func (c *Cell) distances() *Distances {
 
 				_, ok := distances.cells[key]
 				if !ok {
+					fmt.Println("hello")
 					newFrontier.Push(key)
 					distances.cells[key] = distances.cells[currentCell] + 1
 				}

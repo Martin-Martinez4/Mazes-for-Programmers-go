@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestDistances(t *testing.T) {
-	grid1 := CreateGrid(2, 2)
+	grid1 := CreatePlainGrid(2, 2)
 
 	g1c00 := grid1.grid[0][0]
 	distances := CreateDistances(g1c00)
@@ -12,7 +12,7 @@ func TestDistances(t *testing.T) {
 		t.Error("Expected cell 0, 0 to have distance of 0")
 	}
 
-	grid1 = CreateGrid(2, 2)
+	grid1 = CreatePlainGrid(2, 2)
 
 	g1c00 = grid1.grid[0][0]
 	g1c01 := grid1.grid[0][1]
@@ -38,7 +38,7 @@ func TestDistances(t *testing.T) {
 		t.Errorf("Expected cell 1, 1 to have distance of 2; got: %d", distances.cells[g1c01])
 	}
 
-	grid1 = CreateGrid(3, 3)
+	grid1 = CreatePlainGrid(3, 3)
 
 	g1c00 = grid1.grid[0][0]
 	g1c01 = grid1.grid[0][1]

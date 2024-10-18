@@ -6,30 +6,35 @@ import (
 	"strings"
 )
 
-// functions that do the same thing for all gird types should be a function that takes in a grid interface and changes it not a reciever function
-// functions that would be traditionally overloaded can be part of an interface
+// There is an overall grid struct, that struct takes in an interface, that interface has the method that would be overloaded in oop
 
 type Grid struct {
 	rows    int
 	columns int
 	size    int
 	grid    [][]*Cell
+	SpecialGrid
 }
 
-func CreateGrid(rows, columns int) *Grid {
-	grid := Grid{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+type SpecialGrid interface {
+	cellContents(*Cell) string
+}
+
+func CreatePlainGrid(rows, columns int) *Grid {
+	grid := &Grid{
+		rows:        rows,
+		columns:     columns,
+		size:        rows * columns,
+		SpecialGrid: nil,
 	}
 
-	grid.prepareGrid()
-	grid.configureCells()
+	prepareGrid(grid)
+	configureCells(grid)
 
-	return &grid
+	return grid
 }
 
-func (g *Grid) prepareGrid() {
+func prepareGrid(g *Grid) {
 	grid := make([][]*Cell, g.rows)
 
 	for row := 0; row < g.rows; row++ {
@@ -42,7 +47,7 @@ func (g *Grid) prepareGrid() {
 
 	g.grid = grid
 }
-func (g *Grid) configureCells() {
+func configureCells(g *Grid) {
 
 	for row := 0; row < g.rows; row++ {
 		for column := 0; column < g.columns; column++ {
@@ -81,13 +86,19 @@ func (g *Grid) randomCell() *Cell {
 	return g.grid[randRow][randColumn]
 }
 
+func (g *Grid) ContentsOf(cell *Cell) string {
+	if g.SpecialGrid == nil {
+		return " "
+	} else {
+		return g.SpecialGrid.cellContents(cell)
+	}
+}
+
 func (g *Grid) print() {
 
 	// build top and bottom strings as the rows go
 	var top strings.Builder
 	var bottom strings.Builder
-
-	cellbody := "   "
 
 	// top
 	fmt.Print("+")
@@ -109,6 +120,8 @@ func (g *Grid) print() {
 				cell = g.grid[row][cellIndex]
 			}
 
+			cellbody := fmt.Sprintf(" %s ", g.ContentsOf(cell))
+
 			var eastBoundary string
 			if cell.isLinked(cell.east) {
 				eastBoundary = " "
@@ -122,7 +135,7 @@ func (g *Grid) print() {
 
 			var southBoundary string
 			if cell.isLinked(cell.south) {
-				southBoundary = cellbody
+				southBoundary = "   "
 			} else {
 				southBoundary = "---"
 			}
