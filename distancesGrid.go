@@ -19,6 +19,6 @@ func (dg *DistancesGrid) cellContents(cell *Cell) string {
 	if dg.Distances == nil {
 		panic("distances were not initialized")
 	} else {
-		return string(IntToBase61(dg.Distances.cells[cell]))
+		return string(IntToBase62(dg.Distances.cells[cell]))
 	}
 }

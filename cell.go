@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type Cell struct {
 	row    int
 	column int
@@ -72,14 +70,14 @@ func (c *Cell) distances() *Distances {
 	distances := CreateDistances(c)
 
 	// may have to change
-	frontier := CreateQueue(20)
+	frontier := CreateQueue(40)
 
 	currentCell := c
 	distances.cells[currentCell] = 0
 
 	for currentCell != nil {
 		// may have to change
-		newFrontier := CreateQueue(20)
+		newFrontier := CreateQueue(40)
 
 		for currentCell != nil {
 
@@ -87,7 +85,6 @@ func (c *Cell) distances() *Distances {
 
 				_, ok := distances.cells[key]
 				if !ok {
-					fmt.Println("hello")
 					newFrontier.Push(key)
 					distances.cells[key] = distances.cells[currentCell] + 1
 				}
@@ -96,7 +93,6 @@ func (c *Cell) distances() *Distances {
 
 			currentCell = frontier.Pop()
 
-			fmt.Println(currentCell)
 		}
 
 		frontier = newFrontier
