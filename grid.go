@@ -6,35 +6,30 @@ import (
 	"strings"
 )
 
-// There is an overall grid struct, that struct takes in an interface, that interface has the method that would be overloaded in oop
+const STARTPOINT = 64
 
-type Grid struct {
+// There is an overall grid struct, that struct takes in an interface, that interface has the method that would be overloaded in oop
+type Shape struct {
 	rows    int
 	columns int
 	size    int
 	grid    [][]*Cell
-	SpecialGrid
 }
 
-type SpecialGrid interface {
-	cellContents(*Cell) string
-}
-
-func CreatePlainGrid(rows, columns int) *Grid {
-	grid := &Grid{
-		rows:        rows,
-		columns:     columns,
-		size:        rows * columns,
-		SpecialGrid: nil,
+func CreateShape(rows, columns int) *Shape {
+	shape := &Shape{
+		rows:    rows,
+		columns: columns,
+		size:    rows * columns,
 	}
 
-	prepareGrid(grid)
-	configureCells(grid)
+	prepareGrid(shape)
+	configureCells(shape)
 
-	return grid
+	return shape
 }
 
-func prepareGrid(g *Grid) {
+func prepareGrid(g *Shape) {
 	grid := make([][]*Cell, g.rows)
 
 	for row := 0; row < g.rows; row++ {
@@ -47,7 +42,7 @@ func prepareGrid(g *Grid) {
 
 	g.grid = grid
 }
-func configureCells(g *Grid) {
+func configureCells(g *Shape) {
 
 	for row := 0; row < g.rows; row++ {
 		for column := 0; column < g.columns; column++ {
@@ -76,7 +71,7 @@ func configureCells(g *Grid) {
 	}
 }
 
-func (g *Grid) randomCell() *Cell {
+func (g *Shape) randomCell() *Cell {
 
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
@@ -86,15 +81,10 @@ func (g *Grid) randomCell() *Cell {
 	return g.grid[randRow][randColumn]
 }
 
-func (g *Grid) ContentsOf(cell *Cell) string {
-	if g.SpecialGrid == nil {
-		return " "
-	} else {
-		return g.SpecialGrid.cellContents(cell)
-	}
-}
+// instead of taking in a grid take in an interface with get shape and cell contents
+func print(sh ShapeHolder) {
 
-func (g *Grid) print() {
+	g := sh.getShape()
 
 	// build top and bottom strings as the rows go
 	var top strings.Builder
@@ -120,7 +110,7 @@ func (g *Grid) print() {
 				cell = g.grid[row][cellIndex]
 			}
 
-			cellbody := fmt.Sprintf(" %s ", g.ContentsOf(cell))
+			cellbody := fmt.Sprintf(" %s ", sh.ContentsOf(cell))
 
 			var eastBoundary string
 			if cell.isLinked(cell.east) {

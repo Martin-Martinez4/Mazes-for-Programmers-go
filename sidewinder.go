@@ -4,7 +4,8 @@ import (
 	"math/rand"
 )
 
-func Sidewinder(grid *Grid){
+func Sidewinder(sh ShapeHolder) {
+	grid := sh.getShape()
 
 	run := []*Cell{}
 
@@ -31,11 +32,9 @@ func Sidewinder(grid *Grid){
 
 				run = []*Cell{}
 
-
-			}else{
+			} else {
 				cell.link(cell.east)
 			}
-
 
 		}
 	}

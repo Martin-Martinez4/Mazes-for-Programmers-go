@@ -4,7 +4,10 @@ import (
 	"math/rand"
 )
 
-func BinaryTree(grid *Grid) {
+func BinaryTree(sh ShapeHolder) {
+
+	grid := sh.getShape()
+
 	for row := 0; row < grid.rows; row++ {
 
 		for column := 0; column < grid.columns; column++ {

@@ -63,7 +63,24 @@ func (c *Cell) isLinked(cell *Cell) bool {
 }
 
 func (c *Cell) neighbors() []*Cell {
-	return []*Cell{c.north, c.south, c.east, c.west}
+
+	var cells []*Cell
+
+	if c.north != nil {
+		cells = append(cells, c.north)
+	}
+	if c.south != nil {
+		cells = append(cells, c.south)
+	}
+	if c.east != nil {
+		cells = append(cells, c.east)
+	}
+	if c.west != nil {
+		cells = append(cells, c.west)
+	}
+
+	// return []*Cell{c.north, c.south, c.east, c.west}
+	return cells
 }
 
 func (c *Cell) distances() *Distances {

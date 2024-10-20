@@ -2,19 +2,17 @@ package main
 
 func main() {
 
-	// Special kinds of grids should have a normal grid as a field
-	// shared functionality between all grids should be pointer functions on the normal grid field (maybe call it the shape?)
-	// What would be overloaded methods in OOP, should be part of an interface.
-	// Unqiue fields go on the special grid struct.
+	grid1 := CreatePlainGrid(5, 5)
 
-	grid1 := CreateDistancesGrid(5, 5)
+	Wilsons(grid1)
 
-	distanceGrid := grid1.SpecialGrid.(*DistancesGrid)
+	// grid1.setDistancesTo(0, 0)
+	print(grid1)
 
-	Sidewinder(grid1)
+	// grid1.Distances = grid1.shortestPath(grid1.getCell(7, 4))
+	// print(grid1)
 
-	distanceGrid.Distances = grid1.grid[0][0].distances()
-
-	grid1.print()
+	// grid1.Distances = grid1.longestPath(grid1.getCell(0, 0))
+	// print(grid1)
 
 }
