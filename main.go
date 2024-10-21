@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+)
+
 func main() {
 
 	// grid1 := CreatePlainGrid(5, 5)
@@ -17,10 +21,15 @@ func main() {
 	// RecursiveBacktracking(maskedGrid)
 	// print(maskedGrid)
 
-	mask := MaskFromFile("./mask.txt")
-	maskedGrid := CreateMaskGrid(mask)
+	// mask := MaskFromFile("./mask.txt")
+	// maskedGrid := CreateMaskGrid(mask)
 
-	RecursiveBacktracking(maskedGrid)
-	print(maskedGrid)
+	// RecursiveBacktracking(maskedGrid)
+	// print(maskedGrid)
+
+	img, w, h := imagehandling.ReadPNG("./images/test/do_not_delete.png")
+	pixels := imagehandling.PNGDataToPixelSlice(img, w, h)
+
+	imagehandling.WritePNGFromPixels("./images/test/copy", pixels)
 
 }
