@@ -55,7 +55,7 @@ func configureCells(g *Shape) {
 					cell.north = g.grid[row-1][column]
 				}
 
-				if row < g.columns-1 {
+				if row < g.rows-1 {
 
 					cell.south = g.grid[row+1][column]
 				}
@@ -74,15 +74,6 @@ func configureCells(g *Shape) {
 	}
 }
 
-// func (g *Shape) randomCell() *Cell {
-
-// 	// random int [0. rows)
-// 	// and.Intn(max-min) + min, but min is 0
-// 	randRow := rand.Intn(g.rows)
-// 	randColumn := rand.Intn(g.columns)
-
-//		return g.grid[randRow][randColumn]
-//	}
 func (g *Shape) randomCell() *Cell {
 
 	// random int [0. rows)

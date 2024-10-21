@@ -87,6 +87,22 @@ func TestPNGDataToPixelSlice(t *testing.T) {
 				{black, black, black, black, black, black, black, black, black, black, black, black, black, black, black, black, black, black, black, black},
 			},
 		},
+		{
+			name:     "10x10 square border all around except top",
+			filepath: "../images/test/do_not_delete_3.png",
+			pixels: [][]*Pixel{
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, white, white, white, white, white, white, white, white, black},
+				{black, black, black, black, black, black, black, black, black, black},
+			},
+		},
 	}
 
 	for _, tt := range tests {

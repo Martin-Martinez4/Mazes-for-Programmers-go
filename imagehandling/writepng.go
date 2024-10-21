@@ -39,8 +39,8 @@ func WritePNGFromPixels(filepath string, pixels [][]*Pixel) {
 
 	img := image.NewRGBA(image.Rectangle{upperLeft, lowerRight})
 
-	for x := 0; x < width; x++ {
-		for y := 0; y < height; y++ {
+	for x := 0; x < height; x++ {
+		for y := 0; y < width; y++ {
 			c := pixels[x][y]
 			img.Set(x, y, color.RGBA{R: uint8(c.R), G: uint8(c.G), B: uint8(c.B), A: uint8(c.A)})
 		}
