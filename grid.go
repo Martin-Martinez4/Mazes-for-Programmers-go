@@ -48,35 +48,53 @@ func configureCells(g *Shape) {
 		for column := 0; column < g.columns; column++ {
 			cell := g.grid[row][column]
 
-			if row > 0 {
+			if cell != nil {
 
-				cell.north = g.grid[row-1][column]
-			}
+				if row > 0 {
 
-			if row < g.columns-1 {
+					cell.north = g.grid[row-1][column]
+				}
 
-				cell.south = g.grid[row+1][column]
-			}
+				if row < g.columns-1 {
 
-			if column > 0 {
+					cell.south = g.grid[row+1][column]
+				}
 
-				cell.west = g.grid[row][column-1]
-			}
+				if column > 0 {
 
-			if column < g.columns-1 {
+					cell.west = g.grid[row][column-1]
+				}
 
-				cell.east = g.grid[row][column+1]
+				if column < g.columns-1 {
+
+					cell.east = g.grid[row][column+1]
+				}
 			}
 		}
 	}
 }
 
+// func (g *Shape) randomCell() *Cell {
+
+// 	// random int [0. rows)
+// 	// and.Intn(max-min) + min, but min is 0
+// 	randRow := rand.Intn(g.rows)
+// 	randColumn := rand.Intn(g.columns)
+
+//		return g.grid[randRow][randColumn]
+//	}
 func (g *Shape) randomCell() *Cell {
 
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
-	randRow := rand.Intn(g.rows)
-	randColumn := rand.Intn(g.columns)
+	randRow := rand.Intn(len(g.grid))
+	randColumn := rand.Intn(len(g.grid[0]))
+
+	for g.grid[randRow][randColumn] == nil {
+
+		randRow = rand.Intn(len(g.grid))
+		randColumn = rand.Intn(len(g.grid[0]))
+	}
 
 	return g.grid[randRow][randColumn]
 }
