@@ -14,7 +14,7 @@ type Pixel struct {
 	A int
 }
 
-func (p *Pixel) equal(p2 *Pixel) bool {
+func (p *Pixel) Equal(p2 *Pixel) bool {
 	return p.R == p2.R && p.G == p2.G && p.B == p2.B
 }
 

@@ -48,97 +48,91 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 				continue
 			} else {
 				cell = g.grid[row][column]
-			}
+				topLeft := []int{cellHeight * (row), cellWidth * (column)}
+				bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}
+				// bottomRight := []int{cellWidth * (column + 1), cellHeight * (row + 1)}
+				topRight := []int{cellHeight * (row), cellWidth*(column+1) - 1}
 
-			topLeft := []int{cellHeight * (row), cellWidth * (column)}
-			bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}
-			// bottomRight := []int{cellWidth * (column + 1), cellHeight * (row + 1)}
-			topRight := []int{cellHeight * (row), cellWidth*(column+1) - 1}
-
-			// fmt.Println("top left: ", topLeft[0], topLeft[1])
-			// fmt.Println("bottom left: ", bottomLeft[0], bottomLeft[1])
-			// fmt.Println("bottom right: ", bottomRight[0], bottomRight[1])
-			// fmt.Println("top right: ", topRight[0], topRight[1])
-
-			if cell.west == nil {
-				// draw west wall
-				for h := 0; h < cellHeight; h++ {
-					for b := 0; b < wallThickness; b++ {
-						pixels[topLeft[0]+h][topLeft[1]+b] = black
-					}
-				}
-			} else {
-
-				ok := cell.links[cell.west]
-				if !ok {
-					// no link means wall
+				if cell.west == nil {
 					// draw west wall
 					for h := 0; h < cellHeight; h++ {
 						for b := 0; b < wallThickness; b++ {
 							pixels[topLeft[0]+h][topLeft[1]+b] = black
 						}
 					}
-				}
-			}
+				} else {
 
-			if cell.north == nil {
-				// draw north wall
-				for w := 0; w < cellWidth; w++ {
-					for b := 0; b < wallThickness; b++ {
-						pixels[topLeft[0]+b][topLeft[1]+w] = black
+					ok := cell.links[cell.west]
+					if !ok {
+						// no link means wall
+						// draw west wall
+						for h := 0; h < cellHeight; h++ {
+							for b := 0; b < wallThickness; b++ {
+								pixels[topLeft[0]+h][topLeft[1]+b] = black
+							}
+						}
 					}
 				}
-			} else {
 
-				ok := cell.links[cell.north]
-				if !ok {
-					// no link means wall
+				if cell.north == nil {
 					// draw north wall
 					for w := 0; w < cellWidth; w++ {
 						for b := 0; b < wallThickness; b++ {
 							pixels[topLeft[0]+b][topLeft[1]+w] = black
 						}
 					}
-				}
-			}
+				} else {
 
-			if cell.east == nil {
-				// draw east wall
-				for h := 0; h < cellHeight; h++ {
-					for b := 0; b < wallThickness; b++ {
-						pixels[topRight[0]+h][topRight[1]-b] = black
+					ok := cell.links[cell.north]
+					if !ok {
+						// no link means wall
+						// draw north wall
+						for w := 0; w < cellWidth; w++ {
+							for b := 0; b < wallThickness; b++ {
+								pixels[topLeft[0]+b][topLeft[1]+w] = black
+							}
+						}
 					}
 				}
-			} else {
 
-				ok := cell.links[cell.east]
-				if !ok {
-					// no link means wall
+				if cell.east == nil {
 					// draw east wall
 					for h := 0; h < cellHeight; h++ {
 						for b := 0; b < wallThickness; b++ {
 							pixels[topRight[0]+h][topRight[1]-b] = black
 						}
 					}
-				}
-			}
+				} else {
 
-			if cell.south == nil {
-				// draw south wall
-				for w := 0; w < cellWidth; w++ {
-					for b := 0; b < wallThickness; b++ {
-						pixels[bottomLeft[0]-b][bottomLeft[1]+w] = black
+					ok := cell.links[cell.east]
+					if !ok {
+						// no link means wall
+						// draw east wall
+						for h := 0; h < cellHeight; h++ {
+							for b := 0; b < wallThickness; b++ {
+								pixels[topRight[0]+h][topRight[1]-b] = black
+							}
+						}
 					}
 				}
-			} else {
 
-				ok := cell.links[cell.south]
-				if !ok {
-					// no link means wall
+				if cell.south == nil {
 					// draw south wall
 					for w := 0; w < cellWidth; w++ {
 						for b := 0; b < wallThickness; b++ {
-							pixels[bottomLeft[0]+b][bottomLeft[1]+w] = black
+							pixels[bottomLeft[0]-b][bottomLeft[1]+w] = black
+						}
+					}
+				} else {
+
+					ok := cell.links[cell.south]
+					if !ok {
+						// no link means wall
+						// draw south wall
+						for w := 0; w < cellWidth; w++ {
+							for b := 0; b < wallThickness; b++ {
+								pixels[bottomLeft[0]+b][bottomLeft[1]+w] = black
+							}
 						}
 					}
 				}

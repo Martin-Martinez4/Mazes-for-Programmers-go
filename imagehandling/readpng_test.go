@@ -121,7 +121,7 @@ func TestPNGDataToPixelSlice(t *testing.T) {
 
 			for h := 0; h < height; h++ {
 				for w := 0; w < width; w++ {
-					if !tt.pixels[h][w].equal(pixels[h][w]) {
+					if !tt.pixels[h][w].Equal(pixels[h][w]) {
 						fmt.Println(pixels[h][w])
 						t.Errorf("Pixel colors did not match at pixel: (%d,%d)", w, h)
 					}

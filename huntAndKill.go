@@ -26,16 +26,20 @@ func HuntAndKill(sh ShapeHolder) {
 
 					cell := grid[row][column]
 
-					visitedNeighbors := visitedNeighbors(cell)
+					if cell != nil {
 
-					if (len(cell.links) == 0) && (len(visitedNeighbors) > 0) {
-						current = cell
+						visitedNeighbors := visitedNeighbors(cell)
 
-						neighbor := visitedNeighbors[rand.Intn(len(visitedNeighbors))]
-						current.link(neighbor)
+						if (len(cell.links) == 0) && (len(visitedNeighbors) > 0) {
+							current = cell
 
-						break
+							neighbor := visitedNeighbors[rand.Intn(len(visitedNeighbors))]
+							current.link(neighbor)
+
+							break
+						}
 					}
+
 				}
 			}
 		}

@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
 
 type Mask struct {
@@ -108,9 +110,38 @@ func getRowsColumnsFromLine(line []byte) (rows int, columns int) {
 	return rs, cs
 }
 
+func MaskFromPNG(filepath string) *Mask {
+	img, w, h := imagehandling.ReadPNG(filepath)
+	pixels := imagehandling.PNGDataToPixelSlice(img, w, h)
+
+	m := CreateMask(h, w)
+
+	for row := 0; row < h; row++ {
+		for column := 0; column < w; column++ {
+			p := pixels[row][column]
+			if p.Equal(&imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}) {
+				m.turnOff(row, column)
+			}
+		}
+	}
+
+	return m
+}
+
 func (m *Mask) turnOff(row, column int) {
-	m.grid[row][column] = false
-	m.numberOn -= 1
+	if m.grid[row][column] {
+
+		m.grid[row][column] = false
+		m.numberOn -= 1
+	}
+}
+
+func (m *Mask) turnOn(row, column int) {
+	if !m.grid[row][column] {
+
+		m.grid[row][column] = true
+		m.numberOn += 1
+	}
 }
 
 func (m *Mask) isOn(row, column int) bool {
