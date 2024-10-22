@@ -7,6 +7,10 @@ type MaskGrid struct {
 
 func CreateMaskGrid(mask *Mask) *MaskGrid {
 
+	if mask == nil {
+
+		panic("No mask provided")
+	}
 	rows := mask.rows
 	columns := mask.columns
 
@@ -14,11 +18,6 @@ func CreateMaskGrid(mask *Mask) *MaskGrid {
 		rows:    rows,
 		columns: columns,
 		size:    rows * columns,
-	}
-
-	if mask == nil {
-
-		panic("No mask provided")
 	}
 
 	prepareMaskGrid(shape, mask)

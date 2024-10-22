@@ -3,12 +3,12 @@ package main
 import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 
 /*
-	Mask from png
-	- Create pixels from png
-		- ReadPNG
-		- PNGDataToPixelSlice
-		- one pixel is one cell in [][]*Cell
-		- if the pixel is black the Cell is nil
+	Create a draw line function
+		- find slope between two points
+		- use point slope formula in a loop to draw the pixels
+
+		- if line is vertical (x_2 - x_1) is zero
+			- Run Draw Veritcal line function
 */
 
 func main() {
