@@ -2,6 +2,7 @@ package main
 
 type ShapeHolder interface {
 	getShape() *Shape
+	toPNG(filepath string, cellSize int)
 	ContentsOf(*Cell) string
 }
 

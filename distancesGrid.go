@@ -1,5 +1,7 @@
 package main
 
+import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+
 type DistancesGrid struct {
 	*Distances
 	Shape *Shape
@@ -31,4 +33,10 @@ func (dg *DistancesGrid) ContentsOf(cell *Cell) string {
 
 func (dg *DistancesGrid) getShape() *Shape {
 	return dg.Shape
+}
+
+func (dg *DistancesGrid) toPNG(filepath string, cellSize int) {
+	pixs := PixelsFromShape(dg, cellSize, cellSize)
+	withWalls := drawWalls(dg, pixs, 2)
+	imagehandling.WritePNGFromPixels(filepath, withWalls)
 }

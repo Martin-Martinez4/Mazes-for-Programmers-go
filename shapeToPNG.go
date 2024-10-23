@@ -54,63 +54,27 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 				bottomRight := []int{cellHeight*(row+1) - 1, cellWidth*(column+1) - 1}
 				topRight := []int{cellHeight * (row), cellWidth*(column+1) - 1}
 
-				// can probably make a getter for the link that checks for nil and simplify this code
-				if cell.west == nil {
-					// draw west wall
+				// clock-wise
+				if !cell.isLinked(cell.west) {
+
 					draw.StraightLine(bottomLeft[0], bottomLeft[1], topLeft[0], topLeft[1], pixels, *black)
-
-				} else {
-
-					ok := cell.links[cell.west]
-					if !ok {
-						// no link means wall
-						// draw west wall
-						draw.StraightLine(bottomLeft[0], bottomLeft[1], topLeft[0], topLeft[1], pixels, *black)
-					}
 				}
 
-				if cell.north == nil {
-					// draw north wall
+				if !cell.isLinked(cell.north) {
 
 					draw.StraightLine(topRight[0], topRight[1], topLeft[0], topLeft[1], pixels, *black)
-				} else {
-
-					ok := cell.links[cell.north]
-					if !ok {
-						// no link means wall
-
-						draw.StraightLine(topRight[0], topRight[1], topLeft[0], topLeft[1], pixels, *black)
-					}
 				}
 
-				if cell.east == nil {
-					// draw east wall
+				if !cell.isLinked(cell.east) {
 
 					draw.StraightLine(bottomRight[0], bottomRight[1], topRight[0], topRight[1], pixels, *black)
-				} else {
-
-					ok := cell.links[cell.east]
-					if !ok {
-						// no link means wall
-						// draw east wall
-						draw.StraightLine(bottomRight[0], bottomRight[1], topRight[0], topRight[1], pixels, *black)
-
-					}
 				}
 
-				if cell.south == nil {
-					// draw south wall
+				if !cell.isLinked(cell.south) {
+
 					draw.StraightLine(bottomRight[0], bottomRight[1], bottomLeft[0], bottomLeft[1], pixels, *black)
-				} else {
-
-					ok := cell.links[cell.south]
-					if !ok {
-						// no link means wall
-						// draw south wall
-						draw.StraightLine(bottomRight[0], bottomRight[1], bottomLeft[0], bottomLeft[1], pixels, *black)
-
-					}
 				}
+
 			}
 
 		}

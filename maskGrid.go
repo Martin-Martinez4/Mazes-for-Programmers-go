@@ -1,5 +1,7 @@
 package main
 
+import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+
 type MaskGrid struct {
 	Shape *Shape
 	Mask  *Mask
@@ -52,4 +54,10 @@ func prepareMaskGrid(g *Shape, mask *Mask) {
 	}
 
 	g.grid = grid
+}
+
+func (pg *MaskGrid) toPNG(filepath string, cellSize int) {
+	pixs := PixelsFromShape(pg, cellSize, cellSize)
+	withWalls := drawWalls(pg, pixs, 2)
+	imagehandling.WritePNGFromPixels(filepath, withWalls)
 }

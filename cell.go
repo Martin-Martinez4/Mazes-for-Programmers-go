@@ -57,6 +57,10 @@ func (c *Cell) getLinks() []*Cell {
 }
 
 func (c *Cell) isLinked(cell *Cell) bool {
+
+	if cell == nil {
+		return false
+	}
 	_, ok := c.links[cell]
 
 	return ok
