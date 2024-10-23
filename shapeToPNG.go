@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/draw"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
 
@@ -32,7 +33,7 @@ func PixelsFromShape(sh ShapeHolder, cellWidth, cellHeight int) [][]*imagehandli
 
 func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness int) [][]*imagehandling.Pixel {
 
-	black := &imagehandling.Pixel{R: 20, G: 0, B: 0, A: 255}
+	black := &imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
 
 	g := sh.getShape()
 
@@ -50,90 +51,64 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 				cell = g.grid[row][column]
 				topLeft := []int{cellHeight * (row), cellWidth * (column)}
 				bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}
-				// bottomRight := []int{cellWidth * (column + 1), cellHeight * (row + 1)}
+				bottomRight := []int{cellHeight*(row+1) - 1, cellWidth*(column+1) - 1}
 				topRight := []int{cellHeight * (row), cellWidth*(column+1) - 1}
 
+				// can probably make a getter for the link that checks for nil and simplify this code
 				if cell.west == nil {
 					// draw west wall
-					for h := 0; h < cellHeight; h++ {
-						for b := 0; b < wallThickness; b++ {
-							pixels[topLeft[0]+h][topLeft[1]+b] = black
-						}
-					}
+					draw.StraightLine(bottomLeft[0], bottomLeft[1], topLeft[0], topLeft[1], pixels, *black)
+
 				} else {
 
 					ok := cell.links[cell.west]
 					if !ok {
 						// no link means wall
 						// draw west wall
-						for h := 0; h < cellHeight; h++ {
-							for b := 0; b < wallThickness; b++ {
-								pixels[topLeft[0]+h][topLeft[1]+b] = black
-							}
-						}
+						draw.StraightLine(bottomLeft[0], bottomLeft[1], topLeft[0], topLeft[1], pixels, *black)
 					}
 				}
 
 				if cell.north == nil {
 					// draw north wall
-					for w := 0; w < cellWidth; w++ {
-						for b := 0; b < wallThickness; b++ {
-							pixels[topLeft[0]+b][topLeft[1]+w] = black
-						}
-					}
+
+					draw.StraightLine(topRight[0], topRight[1], topLeft[0], topLeft[1], pixels, *black)
 				} else {
 
 					ok := cell.links[cell.north]
 					if !ok {
 						// no link means wall
-						// draw north wall
-						for w := 0; w < cellWidth; w++ {
-							for b := 0; b < wallThickness; b++ {
-								pixels[topLeft[0]+b][topLeft[1]+w] = black
-							}
-						}
+
+						draw.StraightLine(topRight[0], topRight[1], topLeft[0], topLeft[1], pixels, *black)
 					}
 				}
 
 				if cell.east == nil {
 					// draw east wall
-					for h := 0; h < cellHeight; h++ {
-						for b := 0; b < wallThickness; b++ {
-							pixels[topRight[0]+h][topRight[1]-b] = black
-						}
-					}
+
+					draw.StraightLine(bottomRight[0], bottomRight[1], topRight[0], topRight[1], pixels, *black)
 				} else {
 
 					ok := cell.links[cell.east]
 					if !ok {
 						// no link means wall
 						// draw east wall
-						for h := 0; h < cellHeight; h++ {
-							for b := 0; b < wallThickness; b++ {
-								pixels[topRight[0]+h][topRight[1]-b] = black
-							}
-						}
+						draw.StraightLine(bottomRight[0], bottomRight[1], topRight[0], topRight[1], pixels, *black)
+
 					}
 				}
 
 				if cell.south == nil {
 					// draw south wall
-					for w := 0; w < cellWidth; w++ {
-						for b := 0; b < wallThickness; b++ {
-							pixels[bottomLeft[0]-b][bottomLeft[1]+w] = black
-						}
-					}
+					draw.StraightLine(bottomRight[0], bottomRight[1], bottomLeft[0], bottomLeft[1], pixels, *black)
 				} else {
 
 					ok := cell.links[cell.south]
 					if !ok {
 						// no link means wall
 						// draw south wall
-						for w := 0; w < cellWidth; w++ {
-							for b := 0; b < wallThickness; b++ {
-								pixels[bottomLeft[0]+b][bottomLeft[1]+w] = black
-							}
-						}
+						draw.StraightLine(bottomRight[0], bottomRight[1], bottomLeft[0], bottomLeft[1], pixels, *black)
+
 					}
 				}
 			}
