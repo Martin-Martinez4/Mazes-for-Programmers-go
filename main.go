@@ -11,6 +11,17 @@ package main
 
 func main() {
 
+	/*
+		Casting to BaseCell that can potentially be removed happens in
+			- BinaryTree
+			- sidewinder
+			- Cell.go -> Distances and some
+			- grid -> Configure Cells and print
+			- shapeToPNG
+
+			The idea is to make amny of those specific to grids with cells that have four walls and not to the ShapeHaver interface
+	*/
+
 	// Plain grid to PNG
 	// grid1 := CreatePlainGrid(40, 30)
 	// RecursiveBacktracking(grid1)
@@ -24,6 +35,6 @@ func main() {
 
 	pGrid := CreatePolarGrid(8, 20)
 	RecursiveBacktracking(pGrid)
-	pGrid.toPNG("./images/test_output/toPNG_Polar_1", 40)
+	pGrid.toPNG("./images/test_output/toPNG_Polar_1", 30)
 
 }

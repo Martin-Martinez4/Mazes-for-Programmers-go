@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -36,4 +37,8 @@ func BinaryTree(sh ShapeHolder) {
 
 		}
 	}
+}
+
+func testa(a [][]Cell) {
+	fmt.Println("test a")
 }
