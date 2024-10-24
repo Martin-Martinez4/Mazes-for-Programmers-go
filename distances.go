@@ -1,19 +1,19 @@
 package main
 
 type Distances struct {
-	root  *Cell
-	cells map[*Cell]int
+	root  Cell
+	cells map[Cell]int
 }
 
-func CreateDistances(root *Cell) *Distances {
+func CreateDistances(root Cell) *Distances {
 
 	return &Distances{
 		root:  root,
-		cells: map[*Cell]int{root: 0},
+		cells: map[Cell]int{root: 0},
 	}
 }
 
-func (d *Distances) max() (*Cell, int) {
+func (d *Distances) max() (Cell, int) {
 
 	maxCell := d.root
 	maxDistance := 0
@@ -31,7 +31,7 @@ func (d *Distances) max() (*Cell, int) {
 	return maxCell, maxDistance
 }
 
-func (d *Distances) shortestPath(target *Cell) *Distances {
+func (d *Distances) shortestPath(target Cell) *Distances {
 	solutionDistance := CreateDistances(d.root)
 
 	startingCell := d.root
@@ -43,15 +43,12 @@ func (d *Distances) shortestPath(target *Cell) *Distances {
 
 		minDistanceCell := currentCell
 		// begin at target
-		for key := range currentCell.links {
-			dist, ok := d.cells[key]
-			if ok {
+		for _, neighbor := range currentCell.Links() {
+			dist := d.cells[neighbor]
 
-				dist2 := d.cells[minDistanceCell]
-				if dist < dist2 {
-					minDistanceCell = key
-				}
-
+			dist2 := d.cells[minDistanceCell]
+			if dist < dist2 {
+				minDistanceCell = neighbor
 			}
 
 		}
@@ -63,18 +60,17 @@ func (d *Distances) shortestPath(target *Cell) *Distances {
 			currentCell = minDistanceCell
 			solutionDistance.cells[currentCell] = d.cells[currentCell]
 		}
-
 	}
 
 	solutionDistance.cells[startingCell] = STARTPOINT
 	return solutionDistance
 }
 
-func (d *Distances) longestPath(start *Cell) *Distances {
-	distances := start.distances()
+func (d *Distances) longestPath(start Cell) *Distances {
+	distances := start.Distances()
 	newStart, _ := distances.max()
 
-	newDistances := newStart.distances()
+	newDistances := newStart.Distances()
 	goal, _ := newDistances.max()
 
 	return newDistances.shortestPath(goal)

@@ -8,13 +8,13 @@ func AldousBroder(sh ShapeHolder) {
 	unvisited := sh.getShape().size - 1
 
 	for unvisited > 0 {
-		neighbors := cell.neighbors()
+		neighbors := cell.Neighbors()
 		randIndex := rand.Intn(len(neighbors))
 
 		neighbor := neighbors[randIndex]
 
-		if len(neighbor.links) == 0 {
-			cell.link(neighbor)
+		if len(neighbor.Links()) == 0 {
+			cell.Link(neighbor)
 			unvisited--
 		}
 

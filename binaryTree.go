@@ -12,21 +12,26 @@ func BinaryTree(sh ShapeHolder) {
 
 		for column := 0; column < grid.columns; column++ {
 			cell := grid.grid[row][column]
-			neighbors := []*Cell{}
-
-			if cell.north != nil {
-				neighbors = append(neighbors, cell.north)
+			c2, ok := cell.(*BaseCell)
+			if !ok {
+				return
 			}
 
-			if cell.east != nil {
-				neighbors = append(neighbors, cell.east)
+			neighbors := []Cell{}
+
+			if c2.north != nil {
+				neighbors = append(neighbors, c2.north)
+			}
+
+			if c2.east != nil {
+				neighbors = append(neighbors, c2.east)
 			}
 
 			if len(neighbors) == 0 {
 				continue
 			} else {
 				randIndex := rand.Intn(len(neighbors))
-				cell.link(neighbors[randIndex])
+				c2.Link(neighbors[randIndex])
 			}
 
 		}

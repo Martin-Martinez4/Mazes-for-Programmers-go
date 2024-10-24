@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// Need to make a Basic Grid or Basic Shape Struct
+
 const STARTPOINT = 64
 
 // There is an overall grid struct, that struct takes in an interface, that interface has the method that would be overloaded in oop
@@ -13,7 +15,7 @@ type Shape struct {
 	rows    int
 	columns int
 	size    int
-	grid    [][]*Cell
+	grid    [][]Cell
 }
 
 func CreateShape(rows, columns int) *Shape {
@@ -30,13 +32,13 @@ func CreateShape(rows, columns int) *Shape {
 }
 
 func prepareGrid(g *Shape) {
-	grid := make([][]*Cell, g.rows)
+	grid := make([][]Cell, g.rows)
 
 	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]*Cell, g.columns)
+		grid[row] = make([]Cell, g.columns)
 
 		for column := 0; column < g.columns; column++ {
-			grid[row][column] = CreateCell(row, column)
+			grid[row][column] = CreateBaseCell(row, column)
 		}
 	}
 
@@ -49,32 +51,36 @@ func configureCells(g *Shape) {
 			cell := g.grid[row][column]
 
 			if cell != nil {
+				c2, ok := cell.(*BaseCell)
+				if !ok {
+					return
+				}
 
 				if row > 0 {
 
-					cell.north = g.grid[row-1][column]
+					c2.north = g.grid[row-1][column].(*BaseCell)
 				}
 
 				if row < g.rows-1 {
 
-					cell.south = g.grid[row+1][column]
+					c2.south = g.grid[row+1][column].(*BaseCell)
 				}
 
 				if column > 0 {
 
-					cell.west = g.grid[row][column-1]
+					c2.west = g.grid[row][column-1].(*BaseCell)
 				}
 
 				if column < g.columns-1 {
 
-					cell.east = g.grid[row][column+1]
+					c2.east = g.grid[row][column+1].(*BaseCell)
 				}
 			}
 		}
 	}
 }
 
-func (g *Shape) randomCell() *Cell {
+func (g *Shape) randomCell() Cell {
 
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
@@ -111,18 +117,18 @@ func print(sh ShapeHolder) {
 		bottom.WriteString("+")
 		for cellIndex := 0; cellIndex < g.columns; cellIndex++ {
 
-			var cell *Cell
+			var cell *BaseCell
 
 			if g.grid[row][cellIndex] == nil {
-				cell = CreateCell(-1, -1)
+				cell = CreateBaseCell(-1, -1)
 			} else {
-				cell = g.grid[row][cellIndex]
+				cell = g.grid[row][cellIndex].(*BaseCell)
 			}
 
 			cellbody := fmt.Sprintf(" %s ", sh.ContentsOf(cell))
 
 			var eastBoundary string
-			if cell.isLinked(cell.east) {
+			if cell.IsLinked(cell.east) {
 				eastBoundary = " "
 			} else {
 				eastBoundary = "|"
@@ -133,7 +139,7 @@ func print(sh ShapeHolder) {
 			top.WriteString(eastBoundary)
 
 			var southBoundary string
-			if cell.isLinked(cell.south) {
+			if cell.IsLinked(cell.south) {
 				southBoundary = "   "
 			} else {
 				southBoundary = "---"

@@ -28,7 +28,7 @@ func CreateMaskGrid(mask *Mask) *MaskGrid {
 	return &MaskGrid{Shape: shape, Mask: mask}
 }
 
-func (pg *MaskGrid) ContentsOf(cell *Cell) string {
+func (pg *MaskGrid) ContentsOf(cell Cell) string {
 	return " "
 }
 
@@ -37,15 +37,15 @@ func (pg *MaskGrid) getShape() *Shape {
 }
 
 func prepareMaskGrid(g *Shape, mask *Mask) {
-	grid := make([][]*Cell, g.rows)
+	grid := make([][]Cell, g.rows)
 
 	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]*Cell, g.columns)
+		grid[row] = make([]Cell, g.columns)
 
 		for column := 0; column < g.columns; column++ {
 			if mask.isOn(row, column) {
 
-				grid[row][column] = CreateCell(row, column)
+				grid[row][column] = CreateBaseCell(row, column)
 			} else {
 
 				grid[row][column] = nil

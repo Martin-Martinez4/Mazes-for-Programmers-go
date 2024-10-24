@@ -15,10 +15,10 @@ func CreateDistancesGrid(rows, columns int) *DistancesGrid {
 }
 
 func (dg *DistancesGrid) setDistancesTo(row, column int) {
-	dg.Distances = dg.Shape.grid[row][column].distances()
+	dg.Distances = dg.Shape.grid[row][column].Distances()
 }
 
-func (dg *DistancesGrid) ContentsOf(cell *Cell) string {
+func (dg *DistancesGrid) ContentsOf(cell Cell) string {
 	if dg.Distances == nil {
 		panic("distances were not initialized")
 	} else {

@@ -1,53 +1,82 @@
 package main
 
-type Cell struct {
+type Cell interface {
+	Links() []Cell
+	Link(Cell)
+	Unlink(Cell)
+	IsLinked(Cell) bool
+
+	Row() int
+	Column() int
+
+	Neighbors() []Cell
+	Distances() *Distances
+}
+
+type BaseCell struct {
 	row    int
 	column int
-	north  *Cell
-	south  *Cell
-	east   *Cell
-	west   *Cell
-	links  map[*Cell]bool
+	north  *BaseCell
+	south  *BaseCell
+	east   *BaseCell
+	west   *BaseCell
+	links  map[*BaseCell]bool
 }
 
-func CreateCell(row, column int) *Cell {
-	return &Cell{
+func CreateBaseCell(row, column int) *BaseCell {
+	return &BaseCell{
 		row:    row,
 		column: column,
-		links:  map[*Cell]bool{},
+		links:  map[*BaseCell]bool{},
 	}
 
 }
 
-func (c *Cell) link(cell *Cell) {
+func (c *BaseCell) Row() int {
+	return c.row
+}
+
+func (c *BaseCell) Column() int {
+	return c.column
+}
+
+func (c *BaseCell) Link(cell Cell) {
 	if cell == nil {
 		return
 	}
-
-	_, ok := c.links[cell]
+	c2, ok := cell.(*BaseCell)
 	if !ok {
-		c.links[cell] = true
-	}
-
-	_, ok = cell.links[c]
-	if !ok {
-
-		cell.links[c] = true
-	}
-
-}
-
-func (c *Cell) unlink(cell *Cell) {
-	if cell == nil {
 		return
 	}
 
-	delete(c.links, cell)
-	delete(cell.links, c)
+	_, ok = c.links[c2]
+	if !ok {
+		c.links[c2] = true
+	}
+
+	_, ok = c2.links[c]
+	if !ok {
+
+		c2.links[c] = true
+	}
+
 }
 
-func (c *Cell) getLinks() []*Cell {
-	cellLinks := make([]*Cell, len(c.links))
+func (c *BaseCell) Unlink(cell Cell) {
+	if cell == nil {
+		return
+	}
+	c2, ok := cell.(*BaseCell)
+	if !ok {
+		return
+	}
+
+	delete(c.links, c2)
+	delete(c2.links, c)
+}
+
+func (c *BaseCell) Links() []Cell {
+	cellLinks := []Cell{}
 
 	for key, _ := range c.links {
 		cellLinks = append(cellLinks, key)
@@ -56,19 +85,23 @@ func (c *Cell) getLinks() []*Cell {
 	return cellLinks
 }
 
-func (c *Cell) isLinked(cell *Cell) bool {
+func (c *BaseCell) IsLinked(cell Cell) bool {
 
 	if cell == nil {
 		return false
 	}
-	_, ok := c.links[cell]
+	c2, ok := cell.(*BaseCell)
+	if !ok {
+		return false
+	}
+	_, ok = c.links[c2]
 
 	return ok
 }
 
-func (c *Cell) neighbors() []*Cell {
+func (c *BaseCell) Neighbors() []Cell {
 
-	var cells []*Cell
+	var cells []Cell
 
 	if c.north != nil {
 		cells = append(cells, c.north)
@@ -87,7 +120,7 @@ func (c *Cell) neighbors() []*Cell {
 	return cells
 }
 
-func (c *Cell) distances() *Distances {
+func (c *BaseCell) Distances() *Distances {
 	distances := CreateDistances(c)
 
 	// may have to change
@@ -112,12 +145,20 @@ func (c *Cell) distances() *Distances {
 
 			}
 
-			currentCell = frontier.Pop()
+			c2, ok := frontier.Pop().(*BaseCell)
+			if !ok && c2 != nil {
+				return distances
+			}
+			currentCell = c2
 
 		}
 
 		frontier = newFrontier
-		currentCell = frontier.Pop()
+		c2, ok := frontier.Pop().(*BaseCell)
+		if !ok && c2 != nil {
+			return distances
+		}
+		currentCell = c2
 
 	}
 

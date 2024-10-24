@@ -19,7 +19,7 @@ func CreatePlainGrid(rows, columns int) *PlainGrid {
 	return &PlainGrid{Shape: shape}
 }
 
-func (pg *PlainGrid) ContentsOf(cell *Cell) string {
+func (pg *PlainGrid) ContentsOf(cell Cell) string {
 	return " "
 }
 

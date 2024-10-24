@@ -16,7 +16,7 @@ func HuntAndKill(sh ShapeHolder) {
 
 		if len(unvisitedNeighbors) != 0 {
 			neighbor := unvisitedNeighbors[rand.Intn(len(unvisitedNeighbors))]
-			current.link(neighbor)
+			current.Link(neighbor)
 			current = neighbor
 		} else {
 			current = nil
@@ -30,11 +30,11 @@ func HuntAndKill(sh ShapeHolder) {
 
 						visitedNeighbors := visitedNeighbors(cell)
 
-						if (len(cell.links) == 0) && (len(visitedNeighbors) > 0) {
+						if (len(cell.Links()) == 0) && (len(visitedNeighbors) > 0) {
 							current = cell
 
 							neighbor := visitedNeighbors[rand.Intn(len(visitedNeighbors))]
-							current.link(neighbor)
+							current.Link(neighbor)
 
 							break
 						}
@@ -48,13 +48,13 @@ func HuntAndKill(sh ShapeHolder) {
 
 }
 
-func unvisitedNeighbors(cell *Cell) []*Cell {
+func unvisitedNeighbors(cell Cell) []Cell {
 
-	var unvisited []*Cell
-	neighbors := cell.neighbors()
+	var unvisited []Cell
+	neighbors := cell.Neighbors()
 
 	for i := 0; i < len(neighbors); i++ {
-		if len(neighbors[i].links) == 0 {
+		if len(neighbors[i].Links()) == 0 {
 			unvisited = append(unvisited, neighbors[i])
 		}
 	}
@@ -62,13 +62,13 @@ func unvisitedNeighbors(cell *Cell) []*Cell {
 	return unvisited
 }
 
-func visitedNeighbors(cell *Cell) []*Cell {
+func visitedNeighbors(cell Cell) []Cell {
 
-	var visited []*Cell
-	neighbors := cell.neighbors()
+	var visited []Cell
+	neighbors := cell.Neighbors()
 
 	for i := 0; i < len(neighbors); i++ {
-		if len(neighbors[i].links) > 0 {
+		if len(neighbors[i].Links()) > 0 {
 			visited = append(visited, neighbors[i])
 		}
 	}

@@ -6,7 +6,7 @@ import (
 
 // Random walk with loop erasing
 func Wilsons(sh ShapeHolder) {
-	unvisited := make([]*Cell, sh.getShape().size)
+	unvisited := make([]Cell, sh.getShape().size)
 
 	grid := sh.getShape().grid
 	rows := sh.getShape().rows
@@ -25,10 +25,10 @@ func Wilsons(sh ShapeHolder) {
 		randIndex := rand.Intn(len(unvisited))
 		cell := unvisited[randIndex]
 
-		path := []*Cell{cell}
+		path := []Cell{cell}
 
 		for includesCell(cell, unvisited) {
-			neighbors := cell.neighbors()
+			neighbors := cell.Neighbors()
 			cell = neighbors[rand.Intn(len(neighbors))]
 			position := indexOf(cell, path)
 
@@ -41,7 +41,7 @@ func Wilsons(sh ShapeHolder) {
 		}
 
 		for index := 0; index < len(path)-1; index++ {
-			path[index].link(path[index+1])
+			path[index].Link(path[index+1])
 			index2 := indexOf(path[index], unvisited)
 			if index2 == -1 {
 				panic("cell not found in path")
@@ -51,7 +51,7 @@ func Wilsons(sh ShapeHolder) {
 	}
 }
 
-func includesCell(cell *Cell, cells []*Cell) bool {
+func includesCell(cell Cell, cells []Cell) bool {
 
 	for i := 0; i < len(cells); i++ {
 		if cells[i] == cell {
@@ -62,7 +62,7 @@ func includesCell(cell *Cell, cells []*Cell) bool {
 	return false
 }
 
-func indexOf(cell *Cell, cells []*Cell) int {
+func indexOf(cell Cell, cells []Cell) int {
 
 	for i := 0; i < len(cells); i++ {
 		if cells[i] == cell {

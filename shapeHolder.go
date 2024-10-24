@@ -3,7 +3,7 @@ package main
 type ShapeHolder interface {
 	getShape() *Shape
 	toPNG(filepath string, cellSize int)
-	ContentsOf(*Cell) string
+	ContentsOf(Cell) string
 }
 
 func numberOfDeadEnds(sh ShapeHolder) int {
@@ -15,7 +15,7 @@ func numberOfDeadEnds(sh ShapeHolder) int {
 
 	for row := 0; row < rows; row++ {
 		for column := 0; column < columns; column++ {
-			if len(grid[row][column].links) == 1 {
+			if len(grid[row][column].Links()) == 1 {
 				deadEnds++
 			}
 		}

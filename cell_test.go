@@ -1,30 +1,32 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestLinkCells(t *testing.T) {
 
-	cell1 := CreateCell(0, 0)
-	cell2 := CreateCell(1, 0)
-	cell3 := CreateCell(2, 0)
-	cell4 := CreateCell(3, 0)
-	cell5 := CreateCell(0, 1)
-	cell6 := CreateCell(0, 2)
-	cell7 := CreateCell(0, 3)
+	cell1 := CreateBaseCell(0, 0)
+	cell2 := CreateBaseCell(1, 0)
+	cell3 := CreateBaseCell(2, 0)
+	cell4 := CreateBaseCell(3, 0)
+	cell5 := CreateBaseCell(0, 1)
+	cell6 := CreateBaseCell(0, 2)
+	cell7 := CreateBaseCell(0, 3)
 
-	cells := []*Cell{cell1, cell2, cell3, cell4, cell5, cell6, cell7}
+	cells := []Cell{cell1, cell2, cell3, cell4, cell5, cell6, cell7}
 
 	for i := 1; i < len(cells); i++ {
-		cells[0].link(cells[i])
+		cells[0].Link(cells[i])
 	}
 
-	if len(cells[0].links) != len(cells)-1 {
-		t.Errorf("First cell does not have the correct number of links; got: %d expected: %d", len(cells[0].links), len(cells)-1)
+	fmt.Println(len(cells[0].Links()))
+	if len(cells[0].Links()) != len(cells)-1 {
+		t.Errorf("First cell does not have the correct number of links; got: %d expected: %d", len(cells[0].Links()), len(cells)-1)
 	}
 
-	c1Links := cell1.getLinks()
+	c1Links := cell1.Links()
 	c2Found := false
 	for i := 0; i < len(c1Links); i++ {
 		if cell2 == c1Links[i] {
@@ -47,10 +49,10 @@ func TestLinkCells(t *testing.T) {
 		t.Error("cell5 not found in c1links")
 	}
 
-	cell1.unlink(cell5)
+	cell1.Unlink(cell5)
 
 	c5Found = false
-	c1Links = cell1.getLinks()
+	c1Links = cell1.Links()
 	for i := 0; i < len(c1Links); i++ {
 		if cell5 == c1Links[i] {
 			c5Found = true

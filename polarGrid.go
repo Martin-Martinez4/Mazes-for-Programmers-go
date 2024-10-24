@@ -30,7 +30,7 @@ func CreatePolarGrid(rows, columns int) *PolarGrid {
 	return &PolarGrid{Shape: shape}
 }
 
-func (pg *PolarGrid) ContentsOf(cell *Cell) string {
+func (pg *PolarGrid) ContentsOf(cell Cell) string {
 	return " "
 }
 
@@ -65,12 +65,16 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 		for column := 0; column < pg.getShape().columns; column++ {
 
 			cell := grid[row][column]
+			c2, ok := cell.(*BaseCell)
+			if !ok {
+				return
+			}
 
-			theta := 2 * math.Pi / float64(len(grid[cell.row]))
-			innerRadius := float64(cell.row * cellSize)
-			outerRadius := float64((cell.row + 1) * cellSize)
-			thetaCcw := float64(cell.column) * theta
-			thetaCw := float64(cell.column+1) * theta
+			theta := 2 * math.Pi / float64(len(grid[cell.Row()]))
+			innerRadius := float64(cell.Row() * cellSize)
+			outerRadius := float64((cell.Row() + 1) * cellSize)
+			thetaCcw := float64(cell.Column()) * theta
+			thetaCw := float64(cell.Column()+1) * theta
 
 			ax := center + int(innerRadius*math.Cos(thetaCcw))
 			ay := center + int(innerRadius*math.Sin(thetaCcw))
@@ -82,13 +86,13 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 			dx := center + int(outerRadius*math.Cos(thetaCw))
 			dy := center + int(outerRadius*math.Sin(thetaCw))
 
-			if !cell.isLinked(cell.north) {
+			if !cell.IsLinked(c2.north) {
 				drw.StraightLine(ax, ay, cx, cy, pixels, wall)
 			}
-			if !cell.isLinked(cell.east) {
+			if !cell.IsLinked(c2.east) {
 				drw.StraightLine(cx, cy, dx, dy, pixels, wall)
 			}
-			if cell.row == shape.rows-1 {
+			if cell.Row() == shape.rows-1 {
 				drw.StraightLine(bx, by, dx, dy, pixels, wall)
 			}
 

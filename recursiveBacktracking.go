@@ -9,11 +9,11 @@ func RecursiveBacktracking(sh ShapeHolder) {
 	for stack.Length() > 0 {
 		current := stack.Peek()
 
-		ns := current.neighbors()
-		neighbors := []*Cell{}
+		ns := current.Neighbors()
+		neighbors := []Cell{}
 
 		for i := 0; i < len(ns); i++ {
-			if len(ns[i].links) == 0 {
+			if len(ns[i].Links()) == 0 {
 				neighbors = append(neighbors, ns[i])
 			}
 		}
@@ -22,7 +22,7 @@ func RecursiveBacktracking(sh ShapeHolder) {
 			stack.Pop()
 		} else {
 			neighbor := neighbors[rand.Intn(len(neighbors))]
-			current.link(neighbor)
+			current.Link(neighbor)
 			stack.Push(neighbor)
 		}
 	}
