@@ -1,13 +1,22 @@
-package main
+package cell
 
 type PolarCell struct {
-	row     int
-	column  int
-	cw      *PolarCell
-	ccw     *PolarCell
-	inward  *PolarCell
-	outward *PolarCell
+	*PrimeCell
+	Cw      *PolarCell
+	Ccw     *PolarCell
+	Inward  *PolarCell
+	Outward []*PolarCell
 	links   map[*PolarCell]bool
+}
+
+func CreatePolarCell(row, column int) *PolarCell {
+	return &PolarCell{
+		PrimeCell: &PrimeCell{
+			row:    row,
+			column: column,
+		},
+		links: map[*PolarCell]bool{},
+	}
 }
 
 func (pc *PolarCell) Links() []Cell {
@@ -69,14 +78,6 @@ func (pc *PolarCell) IsLinked(cell Cell) bool {
 	return ok
 }
 
-func (pc *PolarCell) Row() int {
-	return pc.row
-}
-
-func (pc *PolarCell) Column() int {
-	return pc.column
-}
-
 func (pc *PolarCell) Distances() *Distances {
 	distances := CreateDistances(pc)
 
@@ -84,7 +85,7 @@ func (pc *PolarCell) Distances() *Distances {
 	frontier := CreateQueue(40)
 
 	currentCell := pc
-	distances.cells[currentCell] = 0
+	distances.Cells[currentCell] = 0
 
 	for currentCell != nil {
 		// may have to change
@@ -94,10 +95,10 @@ func (pc *PolarCell) Distances() *Distances {
 
 			for key, _ := range currentCell.links {
 
-				_, ok := distances.cells[key]
+				_, ok := distances.Cells[key]
 				if !ok {
 					newFrontier.Push(key)
-					distances.cells[key] = distances.cells[currentCell] + 1
+					distances.Cells[key] = distances.Cells[currentCell] + 1
 				}
 
 			}
@@ -125,17 +126,20 @@ func (pc *PolarCell) Distances() *Distances {
 func (pc *PolarCell) Neighbors() []Cell {
 	neighs := []Cell{}
 
-	if pc.cw != nil {
-		neighs = append(neighs, pc.cw)
+	if pc.Cw != nil {
+		neighs = append(neighs, pc.Cw)
 	}
-	if pc.ccw != nil {
-		neighs = append(neighs, pc.ccw)
+	if pc.Ccw != nil {
+		neighs = append(neighs, pc.Ccw)
 	}
-	if pc.inward != nil {
-		neighs = append(neighs, pc.inward)
+	if pc.Inward != nil {
+		neighs = append(neighs, pc.Inward)
 	}
-	if pc.outward != nil {
-		neighs = append(neighs, pc.outward)
+	if pc.Outward != nil {
+		for out := 0; out < len(pc.Outward); out++ {
+
+			neighs = append(neighs, pc.Outward[out])
+		}
 	}
 
 	return neighs

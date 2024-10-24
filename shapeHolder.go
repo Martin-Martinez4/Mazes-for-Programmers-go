@@ -1,9 +1,11 @@
 package main
 
+import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+
 type ShapeHolder interface {
 	getShape() *Shape
 	toPNG(filepath string, cellSize int)
-	ContentsOf(Cell) string
+	ContentsOf(cell.Cell) string
 }
 
 func numberOfDeadEnds(sh ShapeHolder) int {

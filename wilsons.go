@@ -2,11 +2,13 @@ package main
 
 import (
 	"math/rand"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 )
 
 // Random walk with loop erasing
 func Wilsons(sh ShapeHolder) {
-	unvisited := make([]Cell, sh.getShape().size)
+	unvisited := make([]cell.Cell, sh.getShape().size)
 
 	grid := sh.getShape().grid
 	rows := sh.getShape().rows
@@ -23,19 +25,19 @@ func Wilsons(sh ShapeHolder) {
 
 	for len(unvisited) > 0 {
 		randIndex := rand.Intn(len(unvisited))
-		cell := unvisited[randIndex]
+		c := unvisited[randIndex]
 
-		path := []Cell{cell}
+		path := []cell.Cell{c}
 
-		for includesCell(cell, unvisited) {
-			neighbors := cell.Neighbors()
-			cell = neighbors[rand.Intn(len(neighbors))]
-			position := indexOf(cell, path)
+		for includesCell(c, unvisited) {
+			neighbors := c.Neighbors()
+			c = neighbors[rand.Intn(len(neighbors))]
+			position := indexOf(c, path)
 
 			if position != -1 {
 				path = path[0 : position+1]
 			} else {
-				path = append(path, cell)
+				path = append(path, c)
 
 			}
 		}
@@ -51,10 +53,10 @@ func Wilsons(sh ShapeHolder) {
 	}
 }
 
-func includesCell(cell Cell, cells []Cell) bool {
+func includesCell(c cell.Cell, cells []cell.Cell) bool {
 
 	for i := 0; i < len(cells); i++ {
-		if cells[i] == cell {
+		if cells[i] == c {
 			return true
 		}
 	}
@@ -62,10 +64,10 @@ func includesCell(cell Cell, cells []Cell) bool {
 	return false
 }
 
-func indexOf(cell Cell, cells []Cell) int {
+func indexOf(c cell.Cell, cells []cell.Cell) int {
 
 	for i := 0; i < len(cells); i++ {
-		if cells[i] == cell {
+		if cells[i] == c {
 			return i
 		}
 	}

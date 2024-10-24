@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"math"
 
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 	drw "github.com/Martin-Martinez4/Mazes-for-Programmers-go/draw"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
@@ -15,22 +17,24 @@ import (
 
 type PolarGrid struct {
 	Shape *Shape
+	grid  [][]*cell.PolarCell
 }
 
-func CreatePolarGrid(rows, columns int) *PolarGrid {
+func CreatePolarGrid(rows int) *PolarGrid {
 	shape := &Shape{
 		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		columns: 1,
+		size:    rows * 1,
 	}
+	pg := &PolarGrid{Shape: shape}
 
-	prepareGrid(shape)
-	configureCells(shape)
+	preparePolarGrid(pg)
+	configurePolarCells(pg)
 
-	return &PolarGrid{Shape: shape}
+	return pg
 }
 
-func (pg *PolarGrid) ContentsOf(cell Cell) string {
+func (pg *PolarGrid) ContentsOf(c cell.Cell) string {
 	return " "
 }
 
@@ -64,17 +68,19 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 	for row := 0; row < pg.getShape().rows; row++ {
 		for column := 0; column < pg.getShape().columns; column++ {
 
-			cell := grid[row][column]
-			c2, ok := cell.(*BaseCell)
+			fmt.Println("row: ", row, "column: ", column)
+
+			c := grid[row][column]
+			c2, ok := c.(*cell.PolarCell)
 			if !ok {
 				return
 			}
 
-			theta := 2 * math.Pi / float64(len(grid[cell.Row()]))
-			innerRadius := float64(cell.Row() * cellSize)
-			outerRadius := float64((cell.Row() + 1) * cellSize)
-			thetaCcw := float64(cell.Column()) * theta
-			thetaCw := float64(cell.Column()+1) * theta
+			theta := 2 * math.Pi / float64(len(grid[c.Row()]))
+			innerRadius := float64(c.Row() * cellSize)
+			outerRadius := float64((c.Row() + 1) * cellSize)
+			thetaCcw := float64(c.Column()) * theta
+			thetaCw := float64(c.Column()+1) * theta
 
 			ax := center + int(innerRadius*math.Cos(thetaCcw))
 			ay := center + int(innerRadius*math.Sin(thetaCcw))
@@ -86,13 +92,13 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 			dx := center + int(outerRadius*math.Cos(thetaCw))
 			dy := center + int(outerRadius*math.Sin(thetaCw))
 
-			if !cell.IsLinked(c2.north) {
+			if !c.IsLinked(c2.Inward) {
 				drw.StraightLine(ax, ay, cx, cy, pixels, wall)
 			}
-			if !cell.IsLinked(c2.east) {
+			if !c.IsLinked(c2.Cw) {
 				drw.StraightLine(cx, cy, dx, dy, pixels, wall)
 			}
-			if cell.Row() == shape.rows-1 {
+			if c.Row() == shape.rows-1 {
 				drw.StraightLine(bx, by, dx, dy, pixels, wall)
 			}
 
@@ -101,4 +107,59 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 
 	imagehandling.WritePNGFromPixels(filepath, pixels)
 
+}
+
+func preparePolarGrid(pg *PolarGrid) {
+
+	rs := pg.getShape().rows
+
+	rows := make([][]cell.Cell, rs)
+
+	rowHeight := 1.0 / float64(rs)
+
+	pcell := cell.CreatePolarCell(0, 0)
+	rows[0] = []cell.Cell{pcell}
+
+	for row := 1; row < rs; row++ {
+
+		radius := float64(row) / float64(rs)
+		circumference := 2 * math.Pi * radius
+
+		previousCount := len(rows[row-1])
+		estimatedCellWidth := circumference / float64(previousCount)
+		ratio := math.Round(estimatedCellWidth / float64(rowHeight))
+
+		cells := int(float64(previousCount) * ratio)
+		tmp := make([]cell.Cell, cells)
+		for i, _ := range tmp {
+			tmp[i] = cell.CreatePolarCell(row, i)
+		}
+		rows[row] = tmp
+	}
+
+	pg.getShape().grid = rows
+
+}
+
+func configurePolarCells(pg *PolarGrid) {
+	rows := pg.getShape().rows
+	grid := pg.getShape().grid
+
+	for row := 0; row < rows; row++ {
+		for column := 1; column < len(grid[row])-1; column++ {
+			c := grid[row][column].(*cell.PolarCell)
+			ro, col := c.Row(), c.Column()
+			fmt.Println(ro, col)
+
+			if ro > 0 {
+				c.Cw = grid[ro][col+1].(*cell.PolarCell)
+				c.Ccw = grid[ro][col-1].(*cell.PolarCell)
+
+				ratio := len(grid[ro]) - len(grid[ro-1])
+				parent := grid[ro-1][col/ratio].(*cell.PolarCell)
+				parent.Outward = append(parent.Outward, c)
+				c.Inward = parent
+			}
+		}
+	}
 }

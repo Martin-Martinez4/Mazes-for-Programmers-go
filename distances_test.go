@@ -2,15 +2,17 @@ package main
 
 import (
 	"testing"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 )
 
 func TestDistances(t *testing.T) {
 	grid1 := CreateShape(2, 2)
 
 	g1c00 := grid1.grid[0][0]
-	distances := CreateDistances(g1c00)
+	distances := cell.CreateDistances(g1c00)
 
-	if distances.cells[g1c00] != 0 {
+	if distances.Cells[g1c00] != 0 {
 		t.Error("Expected cell 0, 0 to have distance of 0")
 	}
 
@@ -56,7 +58,7 @@ func TestDistances(t *testing.T) {
 
 	type test struct {
 		name     string
-		cell     Cell
+		cell     cell.Cell
 		distance int
 	}
 
@@ -105,8 +107,8 @@ func TestDistances(t *testing.T) {
 		cell := tests[i].cell
 		dist := tests[i].distance
 
-		if distances.cells[cell] != dist {
-			t.Errorf("%s failed: distance expected %d; got %d", tests[i].name, dist, distances.cells[cell])
+		if distances.Cells[cell] != dist {
+			t.Errorf("%s failed: distance expected %d; got %d", tests[i].name, dist, distances.Cells[cell])
 		}
 	}
 

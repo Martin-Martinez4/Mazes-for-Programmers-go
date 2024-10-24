@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/draw"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
@@ -42,8 +43,8 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 	// worry about this later
 	for row := 0; row < g.rows; row++ {
 		for column := 0; column < g.columns; column++ {
-			var cell Cell
-			c2, ok := cell.(*BaseCell)
+			var c cell.Cell
+			c2, ok := c.(*(cell.BaseCell))
 			if !ok {
 				return nil
 			}
@@ -52,29 +53,29 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 				// later fill in or ignore
 				continue
 			} else {
-				cell = g.grid[row][column]
+				c = g.grid[row][column]
 				topLeft := []int{cellHeight * (row), cellWidth * (column)}
 				bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}
 				bottomRight := []int{cellHeight*(row+1) - 1, cellWidth*(column+1) - 1}
 				topRight := []int{cellHeight * (row), cellWidth*(column+1) - 1}
 
 				// clock-wise
-				if !cell.IsLinked(c2.west) {
+				if !c.IsLinked(c2.West) {
 
 					draw.StraightLine(bottomLeft[0], bottomLeft[1], topLeft[0], topLeft[1], pixels, *black)
 				}
 
-				if !cell.IsLinked(c2.north) {
+				if !c.IsLinked(c2.North) {
 
 					draw.StraightLine(topRight[0], topRight[1], topLeft[0], topLeft[1], pixels, *black)
 				}
 
-				if !cell.IsLinked(c2.east) {
+				if !c.IsLinked(c2.East) {
 
 					draw.StraightLine(bottomRight[0], bottomRight[1], topRight[0], topRight[1], pixels, *black)
 				}
 
-				if !cell.IsLinked(c2.south) {
+				if !c.IsLinked(c2.South) {
 
 					draw.StraightLine(bottomRight[0], bottomRight[1], bottomLeft[0], bottomLeft[1], pixels, *black)
 				}

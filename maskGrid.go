@@ -1,6 +1,9 @@
 package main
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+)
 
 type MaskGrid struct {
 	Shape *Shape
@@ -28,7 +31,7 @@ func CreateMaskGrid(mask *Mask) *MaskGrid {
 	return &MaskGrid{Shape: shape, Mask: mask}
 }
 
-func (pg *MaskGrid) ContentsOf(cell Cell) string {
+func (pg *MaskGrid) ContentsOf(cell cell.Cell) string {
 	return " "
 }
 
@@ -37,15 +40,15 @@ func (pg *MaskGrid) getShape() *Shape {
 }
 
 func prepareMaskGrid(g *Shape, mask *Mask) {
-	grid := make([][]Cell, g.rows)
+	grid := make([][]cell.Cell, g.rows)
 
 	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]Cell, g.columns)
+		grid[row] = make([]cell.Cell, g.columns)
 
 		for column := 0; column < g.columns; column++ {
 			if mask.isOn(row, column) {
 
-				grid[row][column] = CreateBaseCell(row, column)
+				grid[row][column] = cell.CreateBaseCell(row, column)
 			} else {
 
 				grid[row][column] = nil

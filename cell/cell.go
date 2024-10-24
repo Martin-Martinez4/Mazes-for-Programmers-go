@@ -1,4 +1,4 @@
-package main
+package cell
 
 type Cell interface {
 	Links() []Cell
@@ -14,30 +14,24 @@ type Cell interface {
 }
 
 type BaseCell struct {
-	row    int
-	column int
-	north  *BaseCell
-	south  *BaseCell
-	east   *BaseCell
-	west   *BaseCell
-	links  map[*BaseCell]bool
+	*PrimeCell
+	North *BaseCell
+	South *BaseCell
+	East  *BaseCell
+	West  *BaseCell
+	links map[*BaseCell]bool
 }
 
 func CreateBaseCell(row, column int) *BaseCell {
+
 	return &BaseCell{
-		row:    row,
-		column: column,
-		links:  map[*BaseCell]bool{},
+		PrimeCell: &PrimeCell{
+			row:    row,
+			column: column,
+		},
+		links: map[*BaseCell]bool{},
 	}
 
-}
-
-func (c *BaseCell) Row() int {
-	return c.row
-}
-
-func (c *BaseCell) Column() int {
-	return c.column
 }
 
 func (c *BaseCell) Link(cell Cell) {
@@ -103,20 +97,19 @@ func (c *BaseCell) Neighbors() []Cell {
 
 	var cells []Cell
 
-	if c.north != nil {
-		cells = append(cells, c.north)
+	if c.North != nil {
+		cells = append(cells, c.North)
 	}
-	if c.south != nil {
-		cells = append(cells, c.south)
+	if c.South != nil {
+		cells = append(cells, c.South)
 	}
-	if c.east != nil {
-		cells = append(cells, c.east)
+	if c.East != nil {
+		cells = append(cells, c.East)
 	}
-	if c.west != nil {
-		cells = append(cells, c.west)
+	if c.West != nil {
+		cells = append(cells, c.West)
 	}
 
-	// return []*Cell{c.north, c.south, c.east, c.west}
 	return cells
 }
 
@@ -127,7 +120,7 @@ func (c *BaseCell) Distances() *Distances {
 	frontier := CreateQueue(40)
 
 	currentCell := c
-	distances.cells[currentCell] = 0
+	distances.Cells[currentCell] = 0
 
 	for currentCell != nil {
 		// may have to change
@@ -137,10 +130,10 @@ func (c *BaseCell) Distances() *Distances {
 
 			for key, _ := range currentCell.links {
 
-				_, ok := distances.cells[key]
+				_, ok := distances.Cells[key]
 				if !ok {
 					newFrontier.Push(key)
-					distances.cells[key] = distances.cells[currentCell] + 1
+					distances.Cells[key] = distances.Cells[currentCell] + 1
 				}
 
 			}

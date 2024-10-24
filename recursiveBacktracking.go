@@ -1,16 +1,20 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+)
 
 func RecursiveBacktracking(sh ShapeHolder) {
-	stack := CreateCellStack()
+	stack := cell.CreateCellStack()
 	stack.Push(sh.getShape().randomCell())
 
 	for stack.Length() > 0 {
 		current := stack.Peek()
 
 		ns := current.Neighbors()
-		neighbors := []Cell{}
+		neighbors := []cell.Cell{}
 
 		for i := 0; i < len(ns); i++ {
 			if len(ns[i].Links()) == 0 {

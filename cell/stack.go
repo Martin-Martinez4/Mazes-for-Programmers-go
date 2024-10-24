@@ -1,4 +1,4 @@
-package main
+package cell
 
 type CellStack struct {
 	stack []Cell

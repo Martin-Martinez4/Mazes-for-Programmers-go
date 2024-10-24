@@ -1,9 +1,14 @@
 package main
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+)
+
+const STARTPOINT = 64
 
 type DistancesGrid struct {
-	*Distances
+	*cell.Distances
 	Shape *Shape
 }
 
@@ -18,15 +23,15 @@ func (dg *DistancesGrid) setDistancesTo(row, column int) {
 	dg.Distances = dg.Shape.grid[row][column].Distances()
 }
 
-func (dg *DistancesGrid) ContentsOf(cell Cell) string {
+func (dg *DistancesGrid) ContentsOf(cell cell.Cell) string {
 	if dg.Distances == nil {
 		panic("distances were not initialized")
 	} else {
-		if dg.Distances.cells[cell] == STARTPOINT {
+		if dg.Distances.Cells[cell] == STARTPOINT {
 			return "@"
 		} else {
 
-			return string(IntToBase62(dg.Distances.cells[cell]))
+			return string(IntToBase62(dg.Distances.Cells[cell]))
 		}
 	}
 }

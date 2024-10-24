@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 )
 
 func BinaryTree(sh ShapeHolder) {
@@ -12,20 +14,19 @@ func BinaryTree(sh ShapeHolder) {
 	for row := 0; row < grid.rows; row++ {
 
 		for column := 0; column < grid.columns; column++ {
-			cell := grid.grid[row][column]
-			c2, ok := cell.(*BaseCell)
+			c2, ok := (grid.grid[row][column]).(*cell.BaseCell)
 			if !ok {
 				return
 			}
 
-			neighbors := []Cell{}
+			neighbors := []cell.Cell{}
 
-			if c2.north != nil {
-				neighbors = append(neighbors, c2.north)
+			if c2.North != nil {
+				neighbors = append(neighbors, c2.North)
 			}
 
-			if c2.east != nil {
-				neighbors = append(neighbors, c2.east)
+			if c2.East != nil {
+				neighbors = append(neighbors, c2.East)
 			}
 
 			if len(neighbors) == 0 {
@@ -39,6 +40,6 @@ func BinaryTree(sh ShapeHolder) {
 	}
 }
 
-func testa(a [][]Cell) {
+func testa(a [][]cell.Cell) {
 	fmt.Println("test a")
 }

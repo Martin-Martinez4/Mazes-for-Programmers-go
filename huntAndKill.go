@@ -1,6 +1,10 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+)
 
 // Randomw walk like in aldousBroder
 // but when a loop happens look for a unvisited cell with a visited neighbor
@@ -48,10 +52,10 @@ func HuntAndKill(sh ShapeHolder) {
 
 }
 
-func unvisitedNeighbors(cell Cell) []Cell {
+func unvisitedNeighbors(c cell.Cell) []cell.Cell {
 
-	var unvisited []Cell
-	neighbors := cell.Neighbors()
+	var unvisited []cell.Cell
+	neighbors := c.Neighbors()
 
 	for i := 0; i < len(neighbors); i++ {
 		if len(neighbors[i].Links()) == 0 {
@@ -62,10 +66,10 @@ func unvisitedNeighbors(cell Cell) []Cell {
 	return unvisited
 }
 
-func visitedNeighbors(cell Cell) []Cell {
+func visitedNeighbors(c cell.Cell) []cell.Cell {
 
-	var visited []Cell
-	neighbors := cell.Neighbors()
+	var visited []cell.Cell
+	neighbors := c.Neighbors()
 
 	for i := 0; i < len(neighbors); i++ {
 		if len(neighbors[i].Links()) > 0 {

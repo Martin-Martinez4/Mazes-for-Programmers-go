@@ -1,6 +1,9 @@
 package main
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
+)
 
 type PlainGrid struct {
 	Shape *Shape
@@ -19,7 +22,7 @@ func CreatePlainGrid(rows, columns int) *PlainGrid {
 	return &PlainGrid{Shape: shape}
 }
 
-func (pg *PlainGrid) ContentsOf(cell Cell) string {
+func (pg *PlainGrid) ContentsOf(c cell.Cell) string {
 	return " "
 }
 
