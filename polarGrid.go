@@ -40,6 +40,18 @@ func (pg *PolarGrid) getShape() *Shape {
 	return pg.Shape
 }
 
+func (pg *PolarGrid) GetCell(row int, column int) cell.Cell {
+	grid := pg.getShape().grid
+	if row >= 0 && row <= len(grid)-1 {
+		c := column % len(grid[row])
+		if c < 0 {
+			c = c + len(grid[row])
+		}
+		return grid[row][c]
+	}
+	return nil
+}
+
 // this is going to need to be reworked
 func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 	shape := pg.getShape()
@@ -66,7 +78,9 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 	for row := 1; row < len(pg.getShape().grid); row++ {
 		for column := 0; column < len(pg.getShape().grid[row]); column++ {
 
-			c := grid[row][column]
+			// c := grid[row][column]
+			c := pg.GetCell(row, column)
+
 			c2, ok := c.(*cell.PolarCell)
 			if !ok {
 				return
@@ -147,30 +161,49 @@ func configurePolarCells(pg *PolarGrid) {
 	// rows := pg.getShape().rows
 	grid := pg.getShape().grid
 
-	for _, row := range grid {
-		for _, c := range row {
+	// for _, row := range grid {
+	// 	for _, c := range row {
 
-			c := c.(*cell.PolarCell)
+	// 		c := c.(*cell.PolarCell)
+	// 		ro, col := c.Row(), c.Column()
+
+	// 		if ro > 0 {
+	// 			if col == 0 {
+
+	// 				c.Ccw = nil
+
+	// 			} else {
+	// 				c.Ccw = grid[ro][col-1].(*cell.PolarCell)
+
+	// 			}
+
+	// 			if col == len(grid[ro])-1 {
+
+	// 				c.Cw = nil
+
+	// 			} else {
+	// 				c.Cw = grid[ro][col+1].(*cell.PolarCell)
+
+	// 			}
+
+	// 			ratio := float64(len(grid[ro])) / float64(len(grid[ro-1]))
+	// 			parent := grid[ro-1][int(float64(col)/ratio)].(*cell.PolarCell)
+	// 			parent.Outward = append(parent.Outward, c)
+	// 			c.Inward = parent
+	// 		}
+	// 	}
+	// }
+	for row := 0; row < len(grid); row++ {
+		for column := 0; column < len(grid[row]); column++ {
+
+			c := pg.GetCell(row, column).(*cell.PolarCell)
 			ro, col := c.Row(), c.Column()
 
 			if ro > 0 {
-				if col == 0 {
 
-					c.Ccw = nil
+				c.Ccw = pg.GetCell(ro, column-1).(*cell.PolarCell)
 
-				} else {
-					c.Ccw = grid[ro][col-1].(*cell.PolarCell)
-
-				}
-
-				if col == len(grid[ro])-1 {
-
-					c.Cw = nil
-
-				} else {
-					c.Cw = grid[ro][col+1].(*cell.PolarCell)
-
-				}
+				c.Cw = pg.GetCell(ro, column+1).(*cell.PolarCell)
 
 				ratio := float64(len(grid[ro])) / float64(len(grid[ro-1]))
 				parent := grid[ro-1][int(float64(col)/ratio)].(*cell.PolarCell)
@@ -179,7 +212,5 @@ func configurePolarCells(pg *PolarGrid) {
 			}
 		}
 	}
-	// for row := 0; row < len(grid); row++ {
-	// 	for column := 1; column < len(grid[row])-1; column++ {
-	// 	}
+
 }

@@ -18,6 +18,14 @@ type Shape struct {
 	grid    [][]cell.Cell
 }
 
+func (g *Shape) GetCell(row int, column int) cell.Cell {
+	if (row >= 0 && row < len(g.grid)) &&
+		(column >= 0 && column < len(g.grid[row])) {
+		return g.grid[row][column]
+	}
+	return nil
+}
+
 func CreateShape(rows, columns int) *Shape {
 	shape := &Shape{
 		rows:    rows,
