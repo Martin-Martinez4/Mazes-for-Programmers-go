@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
 
 //	only algorithms like
@@ -81,65 +82,67 @@ func (hg *HexGrid) toPNG(filepath string, cellSize int) {
 	height := bSize * 2
 
 	imgWidth := int(float64(3*aSize*shape.columns+aSize) + 0.5)
-
-	imgSize := 2 * shape.rows * cellSize
+	imgHeight := int(height*float64(hg.rows) + bSize + 0.5)
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	// wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
 
-	img := image.NewRGBA(image.Rect(0, 0, imgSize+1, imgSize+1))
+	img := image.NewRGBA(image.Rect(0, 0, imgWidth+1, imgHeight+1))
 	// give pixels color
 	white := color.RGBA{255, 255, 255, 255}
-	for x := 0; x < imgSize+1; x++ {
-		for y := 0; y < imgSize+1; y++ {
+	for x := 0; x < imgHeight; x++ {
+		for y := 0; y < imgWidth; y++ {
 			img.Set(x, y, white)
 		}
 	}
 
-	// pixels := imagehandling.PNGDataToPixelSlice(img, imgSize+1, imgSize+1)
+	pixels := imagehandling.PNGDataToPixelSlice(img, imgWidth+1, imgHeight+1)
 
-	// center := imgSize / 2
+	const BACKGROUND = 1
+	for mode := 0; mode < 2; mode++ {
 
-	// for row := 1; row < len(pg.getShape().grid); row++ {
-	// 	for column := 0; column < len(pg.getShape().grid[row]); column++ {
+		for row := 1; row < len(hg.getShape().grid); row++ {
+			for column := 0; column < len(hg.getShape().grid[row]); column++ {
+				cx := cellSize + 3*column*aSize
+				cy := bSize + float64(row)*height
 
-	// 		// c := grid[row][column]
-	// 		c := pg.GetCell(row, column)
+				if column%2 != 0 {
+					cy += bSize
+				}
 
-	// 		c2, ok := c.(*cell.PolarCell)
-	// 		if !ok {
-	// 			return
-	// 		}
+				// f/n -> far/near
+				// n/s/e/w -> north/south/east/west
+				xFW := cx - int(bSize)
+				xNW := cx - aSize
+				xNE := cx + aSize
+				xFE := cx + cellSize
 
-	// 		theta := 2 * math.Pi / float64(len(grid[c.Row()]))
-	// 		innerRadius := float64(c.Row() * cellSize)
-	// 		outerRadius := float64((c.Row() + 1) * cellSize)
-	// 		thetaCcw := float64(c.Column()) * theta
-	// 		thetaCw := float64(c.Column()+1) * theta
+				// m -> middle
+				yN := int(cy - bSize)
+				yM := int(cy)
+				yS := int(cy + bSize)
 
-	// 		ax := center + int(innerRadius*math.Cos(thetaCcw))
-	// 		ay := center + int(innerRadius*math.Sin(thetaCcw))
-	// 		bx := center + int(outerRadius*math.Cos(thetaCcw))
-	// 		by := center + int(outerRadius*math.Sin(thetaCcw))
+				if mode == BACKGROUND {
+					color := pixels[row][column]
 
-	// 		cx := center + int(innerRadius*math.Cos(thetaCw))
-	// 		cy := center + int(innerRadius*math.Sin(thetaCw))
-	// 		dx := center + int(outerRadius*math.Cos(thetaCw))
-	// 		dy := center + int(outerRadius*math.Sin(thetaCw))
+					points := [][]int{
+						{xFW, yM},
+						{xNW, yN},
+						{xNE, yN},
+						{xFE, yM},
+						{xNE, yS},
+						{xNW, yS},
+					}
 
-	// 		if !c2.IsLinked(c2.Inward) {
-	// 			drw.StraightLine(ax, ay, cx, cy, pixels, wall)
-	// 		}
-	// 		if !c2.IsLinked(c2.Cw) {
-	// 			drw.StraightLine(cx, cy, dx, dy, pixels, wall)
-	// 		}
-	// 		if c2.Row() == len(pg.getShape().grid)-1 {
-	// 			drw.StraightLine(bx, by, dx, dy, pixels, wall)
-	// 		}
+					// draw line with sliding window?
+				} else {
 
-	// 	}
-	// }
+				}
 
-	// imagehandling.WritePNGFromPixels(filepath, pixels)
+			}
+		}
+	}
+
+	imagehandling.WritePNGFromPixels(filepath, pixels)
 
 }
