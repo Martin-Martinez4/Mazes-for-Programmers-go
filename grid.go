@@ -91,7 +91,7 @@ func (g *Shape) randomCell() cell.Cell {
 	for g.grid[randRow][randColumn] == nil {
 
 		randRow = rand.Intn(len(g.grid))
-		randColumn = rand.Intn(len(g.grid[0]))
+		randColumn = rand.Intn(len(g.grid[randRow]))
 	}
 
 	return g.grid[randRow][randColumn]

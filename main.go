@@ -33,8 +33,8 @@ func main() {
 	// HuntAndKill(maskgrid)
 	// maskgrid.toPNG("./images/test_output/toPNG_Masked", 45)
 
-	pGrid := CreatePolarGrid(14)
-	RecursiveBacktracking(pGrid)
+	pGrid := CreatePolarGrid(20)
+	AldousBroder(pGrid)
 	pGrid.toPNG("./images/test_output/toPNG_Polar_2", 40)
 
 }

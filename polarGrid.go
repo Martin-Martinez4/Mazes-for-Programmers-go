@@ -116,6 +116,8 @@ func preparePolarGrid(pg *PolarGrid) {
 	pcell := cell.CreatePolarCell(0, 0)
 	rows[0] = []cell.Cell{pcell}
 
+	size := 0
+
 	for row := 1; row < rs; row++ {
 
 		radius := float64(row) / float64(rs)
@@ -126,6 +128,7 @@ func preparePolarGrid(pg *PolarGrid) {
 		ratio := estimatedCellWidth / float64(rowHeight)
 
 		cells := int(previousCount * int(math.Round(ratio)))
+		size += cells
 		tmp := make([]cell.Cell, cells)
 		for i := 0; i < cells; i++ {
 
@@ -136,6 +139,7 @@ func preparePolarGrid(pg *PolarGrid) {
 	}
 
 	pg.getShape().grid = rows
+	pg.Shape.size = size
 
 }
 
