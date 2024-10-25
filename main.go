@@ -12,14 +12,7 @@ package main
 func main() {
 
 	/*
-		Casting to BaseCell that can potentially be removed happens in
-			- BinaryTree
-			- sidewinder
-			- Cell.go -> Distances and some
-			- grid -> Configure Cells and print
-			- shapeToPNG
-
-			The idea is to make amny of those specific to grids with cells that have four walls and not to the ShapeHaver interface
+		The whole Shape thing might be obsolete.  Will look into removing.
 	*/
 
 	// Plain grid to PNG
