@@ -9,8 +9,8 @@ import (
 func RecursiveBacktracking(sh ShapeHolder) {
 	stack := cell.CreateCellStack()
 	stack.Push(sh.getShape().randomCell())
-
 	for stack.Length() > 0 {
+
 		current := stack.Peek()
 
 		ns := current.Neighbors()

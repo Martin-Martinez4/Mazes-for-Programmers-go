@@ -31,6 +31,9 @@ func Wilsons(sh ShapeHolder) {
 
 		for includesCell(c, unvisited) {
 			neighbors := c.Neighbors()
+			if len(neighbors) <= 0 {
+				return
+			}
 			c = neighbors[rand.Intn(len(neighbors))]
 			position := indexOf(c, path)
 

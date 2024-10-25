@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -17,7 +16,6 @@ import (
 
 type PolarGrid struct {
 	Shape *Shape
-	grid  [][]*cell.PolarCell
 }
 
 func CreatePolarGrid(rows int) *PolarGrid {
@@ -65,10 +63,8 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 
 	center := imgSize / 2
 
-	for row := 0; row < pg.getShape().rows; row++ {
-		for column := 0; column < pg.getShape().columns; column++ {
-
-			fmt.Println("row: ", row, "column: ", column)
+	for row := 1; row < len(pg.getShape().grid); row++ {
+		for column := 0; column < len(pg.getShape().grid[row]); column++ {
 
 			c := grid[row][column]
 			c2, ok := c.(*cell.PolarCell)
@@ -92,13 +88,13 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 			dx := center + int(outerRadius*math.Cos(thetaCw))
 			dy := center + int(outerRadius*math.Sin(thetaCw))
 
-			if !c.IsLinked(c2.Inward) {
+			if !c2.IsLinked(c2.Inward) {
 				drw.StraightLine(ax, ay, cx, cy, pixels, wall)
 			}
-			if !c.IsLinked(c2.Cw) {
+			if !c2.IsLinked(c2.Cw) {
 				drw.StraightLine(cx, cy, dx, dy, pixels, wall)
 			}
-			if c.Row() == shape.rows-1 {
+			if c2.Row() == len(pg.getShape().grid)-1 {
 				drw.StraightLine(bx, by, dx, dy, pixels, wall)
 			}
 
@@ -127,13 +123,15 @@ func preparePolarGrid(pg *PolarGrid) {
 
 		previousCount := len(rows[row-1])
 		estimatedCellWidth := circumference / float64(previousCount)
-		ratio := math.Round(estimatedCellWidth / float64(rowHeight))
+		ratio := estimatedCellWidth / float64(rowHeight)
 
-		cells := int(float64(previousCount) * ratio)
+		cells := int(previousCount * int(math.Round(ratio)))
 		tmp := make([]cell.Cell, cells)
-		for i, _ := range tmp {
+		for i := 0; i < cells; i++ {
+
 			tmp[i] = cell.CreatePolarCell(row, i)
 		}
+
 		rows[row] = tmp
 	}
 
@@ -142,24 +140,42 @@ func preparePolarGrid(pg *PolarGrid) {
 }
 
 func configurePolarCells(pg *PolarGrid) {
-	rows := pg.getShape().rows
+	// rows := pg.getShape().rows
 	grid := pg.getShape().grid
 
-	for row := 0; row < rows; row++ {
-		for column := 1; column < len(grid[row])-1; column++ {
-			c := grid[row][column].(*cell.PolarCell)
+	for _, row := range grid {
+		for _, c := range row {
+
+			c := c.(*cell.PolarCell)
 			ro, col := c.Row(), c.Column()
-			fmt.Println(ro, col)
 
 			if ro > 0 {
-				c.Cw = grid[ro][col+1].(*cell.PolarCell)
-				c.Ccw = grid[ro][col-1].(*cell.PolarCell)
+				if col == 0 {
 
-				ratio := len(grid[ro]) - len(grid[ro-1])
-				parent := grid[ro-1][col/ratio].(*cell.PolarCell)
+					c.Ccw = nil
+
+				} else {
+					c.Ccw = grid[ro][col-1].(*cell.PolarCell)
+
+				}
+
+				if col == len(grid[ro])-1 {
+
+					c.Cw = nil
+
+				} else {
+					c.Cw = grid[ro][col+1].(*cell.PolarCell)
+
+				}
+
+				ratio := float64(len(grid[ro])) / float64(len(grid[ro-1]))
+				parent := grid[ro-1][int(float64(col)/ratio)].(*cell.PolarCell)
 				parent.Outward = append(parent.Outward, c)
 				c.Inward = parent
 			}
 		}
 	}
+	// for row := 0; row < len(grid); row++ {
+	// 	for column := 1; column < len(grid[row])-1; column++ {
+	// 	}
 }

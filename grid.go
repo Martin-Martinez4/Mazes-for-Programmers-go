@@ -86,7 +86,7 @@ func (g *Shape) randomCell() cell.Cell {
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
 	randRow := rand.Intn(len(g.grid))
-	randColumn := rand.Intn(len(g.grid[0]))
+	randColumn := rand.Intn(len(g.grid[randRow]))
 
 	for g.grid[randRow][randColumn] == nil {
 
