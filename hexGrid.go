@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/draw"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
 
@@ -25,7 +26,7 @@ func CreateHexGrid(rows, columns int) *HexGrid {
 		size:    rows * columns,
 	}}
 
-	prepareGrid(hg.getShape())
+	prepareHexGrid(hg.getShape())
 	configureHexCells(hg)
 
 	return hg
@@ -37,6 +38,20 @@ func (hg *HexGrid) ContentsOf(c cell.Cell) string {
 
 func (hg *HexGrid) getShape() *Shape {
 	return hg.Shape
+}
+
+func prepareHexGrid(g *Shape) {
+	grid := make([][]cell.Cell, g.rows)
+
+	for row := 0; row < g.rows; row++ {
+		grid[row] = make([]cell.Cell, g.columns)
+
+		for column := 0; column < g.columns; column++ {
+			grid[row][column] = cell.CreateHexCell(row, column)
+		}
+	}
+
+	g.grid = grid
 }
 
 func configureHexCells(hg *HexGrid) {
@@ -59,89 +74,152 @@ func configureHexCells(hg *HexGrid) {
 
 			c := hg.GetCell(row, column).(*cell.HexCell)
 
-			c.NorthWest = hg.GetCell(northDiagonal, column-1).(*cell.HexCell)
-			c.North = hg.GetCell(row-1, column).(*cell.HexCell)
-			c.NorthEast = hg.GetCell(northDiagonal, column+1).(*cell.HexCell)
+			if hg.GetCell(northDiagonal, column-1) == nil {
 
-			c.SouthWest = hg.GetCell(southDiagonal, column-1).(*cell.HexCell)
-			c.South = hg.GetCell(row+1, column).(*cell.HexCell)
-			c.SouthEast = hg.GetCell(southDiagonal, column+1).(*cell.HexCell)
+				c.NorthWest = nil
+			} else {
+				c.NorthWest = hg.GetCell(northDiagonal, column-1).(*cell.HexCell)
+			}
+
+			if hg.GetCell(row-1, column) == nil {
+
+				c.North = nil
+			} else {
+				c.North = hg.GetCell(row-1, column).(*cell.HexCell)
+			}
+
+			if hg.GetCell(northDiagonal, column+1) == nil {
+
+				c.NorthEast = nil
+			} else {
+
+				c.NorthEast = hg.GetCell(northDiagonal, column+1).(*cell.HexCell)
+			}
+
+			if hg.GetCell(southDiagonal, column-1) == nil {
+
+				c.SouthWest = nil
+			} else {
+
+				c.SouthWest = hg.GetCell(southDiagonal, column-1).(*cell.HexCell)
+			}
+
+			if hg.GetCell(row+1, column) == nil {
+
+				c.South = nil
+			} else {
+
+				c.South = hg.GetCell(row+1, column).(*cell.HexCell)
+			}
+
+			if hg.GetCell(southDiagonal, column+1) == nil {
+
+				c.SouthEast = nil
+			} else {
+
+				c.SouthEast = hg.GetCell(southDiagonal, column+1).(*cell.HexCell)
+			}
 
 		}
 	}
 }
 
 // this is going to need to be reworked
-func (hg *HexGrid) toPNG(filepath string, cellSize int) {
+func (hg *HexGrid) toPNG(filepath string, size int) {
 	shape := hg.getShape()
 
-	aSize := cellSize / 2.0
-	bSize := float64(cellSize) * math.Sqrt(3) / 2.0
+	aSize := size / 2.0
+	bSize := (float64(size) * math.Sqrt(3) / 2.0)
 
-	width := cellSize * 2
+	// width := size * 2
 	height := bSize * 2
 
-	imgWidth := int(float64(3*aSize*shape.columns+aSize) + 0.5)
-	imgHeight := int(height*float64(hg.rows) + bSize + 0.5)
+	imgWidth := int((float64(3*aSize*shape.columns+aSize) + .5))
+	imgHeight := int(height*float64(hg.rows) + bSize - .5)
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	// wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
 
 	img := image.NewRGBA(image.Rect(0, 0, imgWidth+1, imgHeight+1))
+
 	// give pixels color
 	white := color.RGBA{255, 255, 255, 255}
-	for x := 0; x < imgHeight; x++ {
-		for y := 0; y < imgWidth; y++ {
+	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
+
+	for x := 0; x < imgWidth; x++ {
+		for y := 0; y < imgHeight; y++ {
 			img.Set(x, y, white)
 		}
 	}
 
-	pixels := imagehandling.PNGDataToPixelSlice(img, imgWidth+1, imgHeight+1)
+	// const BACKGROUND = 1
+	// for mode := 0; mode < 2; mode++ {
 
-	const BACKGROUND = 1
-	for mode := 0; mode < 2; mode++ {
+	for row := 0; row < len(hg.getShape().grid); row++ {
+		for column := 0; column < len(hg.getShape().grid[row]); column++ {
+			cell := hg.GetCell(row, column).(*cell.HexCell)
 
-		for row := 1; row < len(hg.getShape().grid); row++ {
-			for column := 0; column < len(hg.getShape().grid[row]); column++ {
-				cx := cellSize + 3*column*aSize
-				cy := bSize + float64(row)*height
+			cx := size + 3*column*aSize
+			cy := bSize + float64(row)*height
 
-				if column%2 != 0 {
-					cy += bSize
-				}
-
-				// f/n -> far/near
-				// n/s/e/w -> north/south/east/west
-				xFW := cx - int(bSize)
-				xNW := cx - aSize
-				xNE := cx + aSize
-				xFE := cx + cellSize
-
-				// m -> middle
-				yN := int(cy - bSize)
-				yM := int(cy)
-				yS := int(cy + bSize)
-
-				if mode == BACKGROUND {
-					color := pixels[row][column]
-
-					points := [][]int{
-						{xFW, yM},
-						{xNW, yN},
-						{xNE, yN},
-						{xFE, yM},
-						{xNE, yS},
-						{xNW, yS},
-					}
-
-					// draw line with sliding window?
-				} else {
-
-				}
-
+			if column%2 != 0 {
+				cy += bSize
 			}
+
+			// f/n -> far/near
+			// n/s/e/w -> north/south/east/west
+			xFW := cx - size
+			xNW := cx - aSize
+			xNE := cx + aSize
+			xFE := cx + size
+
+			// m -> middle
+			yN := int(cy - bSize)
+			yM := int(cy)
+			yS := int(cy + bSize)
+
+			// if mode == BACKGROUND {
+			// 	color := pixels[row][column]
+
+			// 	points := [][]int{
+			// 		{xFW, yM},
+			// 		{xNW, yN},
+			// 		{xNE, yN},
+			// 		{xFE, yM},
+			// 		{xNE, yS},
+			// 		{xNW, yS},
+			// 	}
+
+			// 	// draw line with sliding window?
+			// 	for i := 0;
+			// } else {
+
+			if cell.SouthWest == nil {
+				draw.StraightLine2(xFW, yM, xNW, yS, img, black)
+			}
+			if cell.NorthWest == nil {
+				draw.StraightLine2(xFW, yM, xNW, yN, img, black)
+			}
+			if cell.North == nil {
+
+				draw.StraightLine2(xNW, yN, xNE, yN, img, black)
+			}
+			if !cell.IsLinked(cell.NorthEast) {
+				draw.StraightLine2(xNE, yN, xFE, yM, img, black)
+			}
+			if !cell.IsLinked(cell.SouthEast) {
+				draw.StraightLine2(xFE, yM, xNE, yS, img, black)
+			}
+			if !cell.IsLinked(cell.South) {
+				draw.StraightLine2(xNE, yS, xNW, yS, img, black)
+			}
+			// }
+
+			// }
 		}
+
 	}
+	pixels := imagehandling.PNGDataToPixelSlice(img, imgWidth+1, imgHeight+1)
 
 	imagehandling.WritePNGFromPixels(filepath, pixels)
 
