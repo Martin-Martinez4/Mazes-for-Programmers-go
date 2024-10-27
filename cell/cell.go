@@ -8,6 +8,8 @@ type Cell interface {
 
 	Row() int
 	Column() int
+	Weight() int
+	SetWeight(int)
 
 	Neighbors() []Cell
 	Distances() *Distances

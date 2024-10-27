@@ -18,30 +18,28 @@ func main() {
 	// Plain grid to PNG
 	// grid1 := CreatePlainGrid(40, 30)
 	// RecursiveBacktracking(grid1)
+	// Braid(grid1, 1)
 	// grid1.toPNG("./images/test_output/toPNG_Plain", 40)
+	// print(grid1)
 
 	// Masked grid toPNG
 	// mask := MaskFromPNG("./images/mask/circle_mask.png")
 	// maskgrid := CreateMaskGrid(mask)
 	// HuntAndKill(maskgrid)
+	// Braid(maskgrid, 1)
 	// maskgrid.toPNG("./images/test_output/toPNG_Masked", 45)
 
 	// pGrid := CreatePolarGrid(20)
 	// AldousBroder(pGrid)
+	// Braid(pGrid, 1)
 	// pGrid.toPNG("./images/test_output/toPNG_Polar_2", 40)
 
 	// hGrid := CreateHexGrid(10, 12)
 	// HuntAndKill(hGrid)
 	// hGrid.toPNG("./images/test_output/toPNG_Hex", 100)
 
-	tGrid := CreateTriangleGrid(8, 8)
-	RecursiveBacktracking(tGrid)
-	// tGrid.GetCell(0, 0).Link(tGrid.GetCell(0, 1))
-	// tGrid.GetCell(0, 0).Link(tGrid.GetCell(1, 0))
-	// tGrid.GetCell(0, 0).(*cell.TriangleCell).South = tGrid.GetCell(1, 0).(*cell.TriangleCell)
-	// fmt.Println()
-	// tGrid.GetCell(1, 1).Link(tGrid.GetCell(1, 2))
-
-	tGrid.toPNG("./images/test_output/toPNG_Tri", 300)
+	// tGrid := CreateTriangleGrid(8, 8)
+	// RecursiveBacktracking(tGrid)
+	// tGrid.toPNG("./images/test_output/toPNG_Tri", 300)
 
 }

@@ -43,16 +43,17 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 	// worry about this later
 	for row := 0; row < g.rows; row++ {
 		for column := 0; column < g.columns; column++ {
-			var c cell.Cell
-			c2, ok := c.(*(cell.BaseCell))
-			if !ok {
-				return nil
-			}
-
-			if g.grid[row][column] == nil {
+			var c cell.Cell = g.grid[row][column]
+			if c == nil {
 				// later fill in or ignore
 				continue
 			} else {
+
+				c2, ok := c.(*cell.BaseCell)
+				if !ok {
+					return nil
+				}
+
 				c = g.grid[row][column]
 				topLeft := []int{cellHeight * (row), cellWidth * (column)}
 				bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}

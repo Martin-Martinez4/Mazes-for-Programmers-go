@@ -67,22 +67,50 @@ func configureCells(g *Shape) {
 
 				if row > 0 {
 
-					c2.North = g.grid[row-1][column].(*cell.BaseCell)
+					c := g.GetCell(row-1, column)
+					if c == nil {
+
+						c2.North = nil
+					} else {
+						c2.North = c.(*cell.BaseCell)
+					}
+
+					// c2.North = g.grid[row-1][column].(*cell.BaseCell)
 				}
 
 				if row < g.rows-1 {
 
-					c2.South = g.grid[row+1][column].(*cell.BaseCell)
+					c := g.GetCell(row+1, column)
+					if c == nil {
+
+						c2.South = nil
+					} else {
+						c2.South = c.(*cell.BaseCell)
+					}
+
+					// c2.South = g.grid[row+1][column].(*cell.BaseCell)
 				}
 
 				if column > 0 {
 
-					c2.West = g.grid[row][column-1].(*cell.BaseCell)
+					c := g.GetCell(row, column-1)
+					if c == nil {
+
+						c2.West = nil
+					} else {
+						c2.West = c.(*cell.BaseCell)
+					}
 				}
 
 				if column < g.columns-1 {
+					c := g.GetCell(row, column+1)
+					if c == nil {
 
-					c2.East = g.grid[row][column+1].(*cell.BaseCell)
+						c2.East = nil
+					} else {
+						c2.East = c.(*cell.BaseCell)
+					}
+
 				}
 			}
 		}

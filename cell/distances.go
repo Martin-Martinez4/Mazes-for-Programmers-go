@@ -1,5 +1,9 @@
 package cell
 
+// PrimeCell will have a weight option that starts at one
+// All Cells will have a PrimeCell
+// That way weighted distances can be used by all types of cells
+
 type Distances struct {
 	root  Cell
 	Cells map[Cell]int
@@ -67,6 +71,16 @@ func (d *Distances) shortestPath(target Cell) *Distances {
 	solutionDistance.Cells[startingCell] = STARTPOINT
 	return solutionDistance
 }
+
+// func weightedShortestPath(start Cell) *Distances {
+// 	distances := CreateDistances(start)
+// 	pending := []Cell{start}
+
+// 	for len(pending) > 0 {
+
+// 	}
+
+// }
 
 func (d *Distances) longestPath(start Cell) *Distances {
 	distances := start.Distances()

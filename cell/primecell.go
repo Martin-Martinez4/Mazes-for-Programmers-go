@@ -4,6 +4,7 @@ package cell
 type PrimeCell struct {
 	row    int
 	column int
+	weight int
 }
 
 func (p *PrimeCell) Row() int {
@@ -12,4 +13,12 @@ func (p *PrimeCell) Row() int {
 
 func (p *PrimeCell) Column() int {
 	return p.column
+}
+
+func (p *PrimeCell) Weight() int {
+	return p.weight
+}
+
+func (p *PrimeCell) SetWeight(weight int) {
+	p.weight = weight
 }
