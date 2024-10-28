@@ -5,8 +5,9 @@ package cell
 // That way weighted distances can be used by all types of cells
 
 type Distances struct {
-	root  Cell
-	Cells map[Cell]int
+	root        Cell
+	Cells       map[Cell]int
+	MaxDistance int
 }
 
 const STARTPOINT = 64
@@ -19,7 +20,7 @@ func CreateDistances(root Cell) *Distances {
 	}
 }
 
-func (d *Distances) max() (Cell, int) {
+func (d *Distances) Max() (Cell, int) {
 
 	maxCell := d.root
 	maxDistance := 0
@@ -72,22 +73,38 @@ func (d *Distances) shortestPath(target Cell) *Distances {
 	return solutionDistance
 }
 
-// func weightedShortestPath(start Cell) *Distances {
-// 	distances := CreateDistances(start)
-// 	pending := []Cell{start}
+func WeightedShortestPath(start Cell) *Distances {
+	pq := PriorityQueue{}
+	pq.Push(start)
+	weights := &Distances{root: start, Cells: map[Cell]int{}}
 
-// 	for len(pending) > 0 {
+	weights.Cells[start] = 0
 
-// 	}
+	for len(pq) > 0 {
+		cell := pq.Pop()
 
-// }
+		links := cell.Links()
+		for i := 0; i < len(links); i++ {
+			neighbor := links[i]
+			totalWeight := weights.Cells[cell] + neighbor.Weight()
+
+			val, ok := weights.Cells[neighbor]
+			if !ok || totalWeight < val {
+				pq.Push(neighbor)
+				weights.Cells[neighbor] = totalWeight
+			}
+		}
+	}
+
+	return weights
+}
 
 func (d *Distances) longestPath(start Cell) *Distances {
 	distances := start.Distances()
-	newStart, _ := distances.max()
+	newStart, _ := distances.Max()
 
 	newDistances := newStart.Distances()
-	goal, _ := newDistances.max()
+	goal, _ := newDistances.Max()
 
 	return newDistances.shortestPath(goal)
 }

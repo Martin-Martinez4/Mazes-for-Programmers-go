@@ -162,7 +162,7 @@ func print(sh ShapeHolder) {
 				c = g.grid[row][cellIndex].(*cell.BaseCell)
 			}
 
-			cellbody := fmt.Sprintf(" %s ", sh.ContentsOf(c))
+			cellbody := fmt.Sprintf(" %s ", " ")
 
 			var eastBoundary string
 			if c.IsLinked(c.East) {
@@ -177,9 +177,77 @@ func print(sh ShapeHolder) {
 
 			var southBoundary string
 			if c.IsLinked(c.South) {
+				// These need to increase with number size increase
 				southBoundary = "   "
 			} else {
 				southBoundary = "---"
+			}
+
+			corner := "+"
+
+			bottom.WriteString(southBoundary)
+			bottom.WriteString(corner)
+		}
+
+		fmt.Print(top.String(), "\n")
+		fmt.Print(bottom.String(), "\n")
+
+		top.Reset()
+		bottom.Reset()
+	}
+}
+
+func printDistanceGrid(dg *DistancesGrid) {
+
+	g := dg.getShape()
+	_, max := dg.Distances.Max()
+	maxSpaces := DigitsInInt(max)
+	trail := strings.Repeat(" ", maxSpaces)
+	dashes := strings.Repeat("-", maxSpaces)
+
+	// build top and bottom strings as the rows go
+	var top strings.Builder
+	var bottom strings.Builder
+
+	// top
+	fmt.Print("+")
+	for columns := 0; columns < g.columns; columns++ {
+		fmt.Print(dashes + "--+")
+	}
+	fmt.Print("\n")
+
+	for row := 0; row < g.rows; row++ {
+		top.WriteString("|")
+		bottom.WriteString("+")
+		for cellIndex := 0; cellIndex < g.columns; cellIndex++ {
+
+			var c *cell.BaseCell
+
+			if g.grid[row][cellIndex] == nil {
+				c = cell.CreateBaseCell(-1, -1)
+			} else {
+				c = g.grid[row][cellIndex].(*cell.BaseCell)
+			}
+
+			cellbody := fmt.Sprintf(" %s ", dg.ContentsOf(c))
+
+			var eastBoundary string
+			if c.IsLinked(c.East) {
+				eastBoundary = " "
+			} else {
+				eastBoundary = "|"
+			}
+
+			// fmt.Print(cellbody, eastBoundary)
+			top.WriteString(cellbody)
+			top.WriteString(eastBoundary)
+
+			var southBoundary string
+			if c.IsLinked(c.South) {
+				// These need to increase with number size increase
+				southBoundary = trail + "  "
+			} else {
+				southBoundary = dashes + "--"
 			}
 
 			corner := "+"

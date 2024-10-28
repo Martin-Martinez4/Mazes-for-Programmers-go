@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/imagehandling"
 )
@@ -24,15 +28,23 @@ func (dg *DistancesGrid) setDistancesTo(row, column int) {
 }
 
 func (dg *DistancesGrid) ContentsOf(cell cell.Cell) string {
+	if dg.Distances.MaxDistance == 0 {
+		_, val := dg.Distances.Max()
+		dg.Distances.MaxDistance = val
+	}
+
+	maxSpaces := DigitsInInt(dg.Distances.MaxDistance)
+	spacesHave := DigitsInInt(dg.Distances.Cells[cell])
+
+	spaces := (maxSpaces - spacesHave)
+
 	if dg.Distances == nil {
 		panic("distances were not initialized")
 	} else {
-		if dg.Distances.Cells[cell] == STARTPOINT {
-			return "@"
-		} else {
 
-			return string(IntToBase62(dg.Distances.Cells[cell]))
-		}
+		trail := strings.Repeat(" ", spaces)
+		return fmt.Sprint(trail + strconv.Itoa(dg.Distances.Cells[cell]))
+
 	}
 }
 
@@ -44,4 +56,16 @@ func (dg *DistancesGrid) toPNG(filepath string, cellSize int) {
 	pixs := PixelsFromShape(dg, cellSize, cellSize)
 	withWalls := drawWalls(dg, pixs, 2)
 	imagehandling.WritePNGFromPixels(filepath, withWalls)
+}
+
+func DigitsInInt(num int) int {
+	if num <= 9 {
+		return 1
+	}
+	count := 0
+	for num != 0 {
+		num /= 10
+		count++
+	}
+	return count
 }

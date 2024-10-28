@@ -14,6 +14,7 @@ func CreatePolarCell(row, column int) *PolarCell {
 		PrimeCell: &PrimeCell{
 			row:    row,
 			column: column,
+			weight: 1,
 		},
 		links: map[*PolarCell]bool{},
 	}

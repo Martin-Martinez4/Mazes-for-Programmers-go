@@ -16,6 +16,7 @@ func CreateHexCell(row, column int) *HexCell {
 		PrimeCell: &PrimeCell{
 			row:    row,
 			column: column,
+			weight: 1,
 		},
 		links: map[*HexCell]bool{},
 	}

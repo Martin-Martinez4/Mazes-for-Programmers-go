@@ -20,6 +20,7 @@ func CreateTriangleCell(row, column int) *TriangleCell {
 		PrimeCell: &PrimeCell{
 			row:    row,
 			column: column,
+			weight: 1,
 		},
 		Upright: upright,
 		links:   map[*TriangleCell]bool{},

@@ -30,6 +30,7 @@ func CreateBaseCell(row, column int) *BaseCell {
 		PrimeCell: &PrimeCell{
 			row:    row,
 			column: column,
+			weight: 1,
 		},
 		links: map[*BaseCell]bool{},
 	}

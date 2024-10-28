@@ -42,4 +42,19 @@ func main() {
 	// RecursiveBacktracking(tGrid)
 	// tGrid.toPNG("./images/test_output/toPNG_Tri", 300)
 
+	// pg1 := CreatePlainGrid(5, 5)
+	// RecursiveBacktracking(pg1)
+	// Braid(pg1, .5)
+	// pg1.Shape.GetCell(0, 1).SetWeight(3)
+	// pg1.Shape.GetCell(2, 3).SetWeight(10)
+
+	// dist := cell.WeightedShortestPath(pg1.Shape.GetCell(0, 0))
+	// dg := &DistancesGrid{Distances: dist, Shape: pg1.Shape}
+	// print(dg)
+
+	bg := CreatePlainGrid(14, 10)
+	RecursiveBacktracking(bg)
+	Braid(bg, .5)
+	bg.png("./images/test_output/inset_test", 100, 0.1)
+	bg.toPNG("./images/test_output/no_inset_test", 100)
 }
