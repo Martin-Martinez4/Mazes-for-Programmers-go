@@ -1,11 +1,15 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+)
 
 // Simple random walk
-func AldousBroder(sh ShapeHolder) {
-	cell := sh.getShape().randomCell()
-	unvisited := sh.getShape().size - 1
+func AldousBroder(sh grid.ShapeHolder) {
+	cell := sh.GetShape().RandomCell()
+	unvisited := sh.GetShape().Size - 1
 
 	for unvisited > 0 {
 		neighbors := cell.Neighbors()

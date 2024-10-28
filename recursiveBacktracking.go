@@ -1,16 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
-func RecursiveBacktracking(sh ShapeHolder) {
+func RecursiveBacktracking(sh grid.ShapeHolder) {
 	stack := cell.CreateCellStack()
-	stack.Push(sh.getShape().randomCell())
+	stack.Push(sh.GetShape().RandomCell())
 	for stack.Length() > 0 {
-
 		current := stack.Peek()
 
 		ns := current.Neighbors()
@@ -22,6 +23,7 @@ func RecursiveBacktracking(sh ShapeHolder) {
 			}
 		}
 
+		fmt.Println(len(neighbors))
 		if len(neighbors) == 0 {
 			stack.Pop()
 		} else {

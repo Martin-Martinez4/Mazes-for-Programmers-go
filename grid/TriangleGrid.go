@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"fmt"
@@ -22,9 +22,9 @@ type TriangleGrid struct {
 func CreateTriangleGrid(rows, columns int) *TriangleGrid {
 
 	tg := &TriangleGrid{Shape: &Shape{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		Rows:    rows,
+		Columns: columns,
+		Size:    rows * columns,
 	}}
 
 	prepareTriangleGrid(tg.getShape())
@@ -42,22 +42,22 @@ func (tg *TriangleGrid) getShape() *Shape {
 }
 
 func prepareTriangleGrid(g *Shape) {
-	grid := make([][]cell.Cell, g.rows)
+	grid := make([][]cell.Cell, g.Rows)
 
-	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]cell.Cell, g.columns)
+	for row := 0; row < g.Rows; row++ {
+		grid[row] = make([]cell.Cell, g.Columns)
 
-		for column := 0; column < g.columns; column++ {
+		for column := 0; column < g.Columns; column++ {
 			grid[row][column] = cell.CreateTriangleCell(row, column)
 		}
 	}
 
-	g.grid = grid
+	g.Grid = grid
 }
 
 func configureTriangleCells(tg *TriangleGrid) {
 
-	grid := tg.getShape().grid
+	grid := tg.getShape().Grid
 
 	for row := 0; row < len(grid); row++ {
 		for column := 0; column < len(grid[row]); column++ {
@@ -102,8 +102,8 @@ func (tg *TriangleGrid) toPNG(filepath string, size int) {
 	height := float64(size) * math.Sqrt(3) / 2
 	halfHeight := height / 2.0
 
-	imgWidth := int(size * (shape.columns + 1) / 2.0)
-	imgHeight := int(height) * shape.rows
+	imgWidth := int(size * (shape.Columns + 1) / 2.0)
+	imgHeight := int(height) * shape.Rows
 
 	img := image.NewRGBA(image.Rect(0, 0, imgWidth+1, imgHeight+1))
 
@@ -117,8 +117,8 @@ func (tg *TriangleGrid) toPNG(filepath string, size int) {
 		}
 	}
 
-	for row := 0; row < len(tg.getShape().grid); row++ {
-		for column := 0; column < len(tg.getShape().grid[row]); column++ {
+	for row := 0; row < len(tg.getShape().Grid); row++ {
+		for column := 0; column < len(tg.getShape().Grid[row]); column++ {
 			cell := tg.GetCell(row, column).(*cell.TriangleCell)
 
 			cx := halfWidth + float64(column)*halfWidth

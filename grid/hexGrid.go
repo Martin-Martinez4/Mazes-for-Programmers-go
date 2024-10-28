@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"image"
@@ -21,9 +21,9 @@ type HexGrid struct {
 func CreateHexGrid(rows, columns int) *HexGrid {
 
 	hg := &HexGrid{Shape: &Shape{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		Rows:    rows,
+		Columns: columns,
+		Size:    rows * columns,
 	}}
 
 	prepareHexGrid(hg.getShape())
@@ -41,22 +41,22 @@ func (hg *HexGrid) getShape() *Shape {
 }
 
 func prepareHexGrid(g *Shape) {
-	grid := make([][]cell.Cell, g.rows)
+	grid := make([][]cell.Cell, g.Rows)
 
-	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]cell.Cell, g.columns)
+	for row := 0; row < g.Rows; row++ {
+		grid[row] = make([]cell.Cell, g.Columns)
 
-		for column := 0; column < g.columns; column++ {
+		for column := 0; column < g.Columns; column++ {
 			grid[row][column] = cell.CreateHexCell(row, column)
 		}
 	}
 
-	g.grid = grid
+	g.Grid = grid
 }
 
 func configureHexCells(hg *HexGrid) {
 
-	grid := hg.getShape().grid
+	grid := hg.getShape().Grid
 
 	for row := 0; row < len(grid); row++ {
 		for column := 0; column < len(grid[row]); column++ {
@@ -134,8 +134,8 @@ func (hg *HexGrid) toPNG(filepath string, size int) {
 	// width := size * 2
 	height := bSize * 2
 
-	imgWidth := int((float64(3*aSize*shape.columns+aSize) + .5))
-	imgHeight := int(height*float64(hg.rows) + bSize - .5)
+	imgWidth := int((float64(3*aSize*shape.Columns+aSize) + .5))
+	imgHeight := int(height*float64(hg.Rows) + bSize - .5)
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	// wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
@@ -155,8 +155,8 @@ func (hg *HexGrid) toPNG(filepath string, size int) {
 	// const BACKGROUND = 1
 	// for mode := 0; mode < 2; mode++ {
 
-	for row := 0; row < len(hg.getShape().grid); row++ {
-		for column := 0; column < len(hg.getShape().grid[row]); column++ {
+	for row := 0; row < len(hg.getShape().Grid); row++ {
+		for column := 0; column < len(hg.getShape().Grid[row]); column++ {
 			cell := hg.GetCell(row, column).(*cell.HexCell)
 
 			cx := size + 3*column*aSize

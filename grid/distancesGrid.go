@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func CreateDistancesGrid(rows, columns int) *DistancesGrid {
 }
 
 func (dg *DistancesGrid) setDistancesTo(row, column int) {
-	dg.Distances = dg.Shape.grid[row][column].Distances()
+	dg.Distances = dg.Shape.Grid[row][column].Distances()
 }
 
 func (dg *DistancesGrid) ContentsOf(cell cell.Cell) string {
@@ -48,11 +48,11 @@ func (dg *DistancesGrid) ContentsOf(cell cell.Cell) string {
 	}
 }
 
-func (dg *DistancesGrid) getShape() *Shape {
+func (dg *DistancesGrid) GetShape() *Shape {
 	return dg.Shape
 }
 
-func (dg *DistancesGrid) toPNG(filepath string, cellSize int) {
+func (dg *DistancesGrid) ToPNG(filepath string, cellSize int) {
 	pixs := PixelsFromShape(dg, cellSize, cellSize)
 	withWalls := drawWalls(dg, pixs, 2)
 	imagehandling.WritePNGFromPixels(filepath, withWalls)

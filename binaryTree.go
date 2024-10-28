@@ -5,16 +5,17 @@ import (
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
-func BinaryTree(sh ShapeHolder) {
+func BinaryTree(sh grid.ShapeHolder) {
 
-	grid := sh.getShape()
+	grid := sh.GetShape()
 
-	for row := 0; row < grid.rows; row++ {
+	for row := 0; row < grid.Rows; row++ {
 
-		for column := 0; column < grid.columns; column++ {
-			c2, ok := (grid.grid[row][column]).(*cell.BaseCell)
+		for column := 0; column < grid.Columns; column++ {
+			c2, ok := (grid.Grid[row][column]).(*cell.BaseCell)
 			if !ok {
 				return
 			}

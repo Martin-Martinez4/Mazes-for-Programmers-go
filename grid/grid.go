@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"fmt"
@@ -12,25 +12,25 @@ import (
 
 // There is an overall grid struct, that struct takes in an interface, that interface has the method that would be overloaded in oop
 type Shape struct {
-	rows    int
-	columns int
-	size    int
-	grid    [][]cell.Cell
+	Rows    int
+	Columns int
+	Size    int
+	Grid    [][]cell.Cell
 }
 
 func (g *Shape) GetCell(row int, column int) cell.Cell {
-	if (row >= 0 && row < len(g.grid)) &&
-		(column >= 0 && column < len(g.grid[row])) {
-		return g.grid[row][column]
+	if (row >= 0 && row < len(g.Grid)) &&
+		(column >= 0 && column < len(g.Grid[row])) {
+		return g.Grid[row][column]
 	}
 	return nil
 }
 
 func CreateShape(rows, columns int) *Shape {
 	shape := &Shape{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		Rows:    rows,
+		Columns: columns,
+		Size:    rows * columns,
 	}
 
 	prepareGrid(shape)
@@ -40,24 +40,24 @@ func CreateShape(rows, columns int) *Shape {
 }
 
 func prepareGrid(g *Shape) {
-	grid := make([][]cell.Cell, g.rows)
+	grid := make([][]cell.Cell, g.Rows)
 
-	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]cell.Cell, g.columns)
+	for row := 0; row < g.Rows; row++ {
+		grid[row] = make([]cell.Cell, g.Columns)
 
-		for column := 0; column < g.columns; column++ {
+		for column := 0; column < g.Columns; column++ {
 			grid[row][column] = cell.CreateBaseCell(row, column)
 		}
 	}
 
-	g.grid = grid
+	g.Grid = grid
 }
 func configureCells(g *Shape) {
 
-	for row := 0; row < g.rows; row++ {
-		for column := 0; column < g.columns; column++ {
+	for row := 0; row < g.Rows; row++ {
+		for column := 0; column < g.Columns; column++ {
 
-			c := g.grid[row][column]
+			c := g.Grid[row][column]
 
 			if c != nil {
 				c2, ok := c.(*cell.BaseCell)
@@ -78,7 +78,7 @@ func configureCells(g *Shape) {
 					// c2.North = g.grid[row-1][column].(*cell.BaseCell)
 				}
 
-				if row < g.rows-1 {
+				if row < g.Rows-1 {
 
 					c := g.GetCell(row+1, column)
 					if c == nil {
@@ -102,7 +102,7 @@ func configureCells(g *Shape) {
 					}
 				}
 
-				if column < g.columns-1 {
+				if column < g.Columns-1 {
 					c := g.GetCell(row, column+1)
 					if c == nil {
 
@@ -117,26 +117,26 @@ func configureCells(g *Shape) {
 	}
 }
 
-func (g *Shape) randomCell() cell.Cell {
+func (g *Shape) RandomCell() cell.Cell {
 
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
-	randRow := rand.Intn(len(g.grid))
-	randColumn := rand.Intn(len(g.grid[randRow]))
+	randRow := rand.Intn(len(g.Grid))
+	randColumn := rand.Intn(len(g.Grid[randRow]))
 
-	for g.grid[randRow][randColumn] == nil {
+	for g.Grid[randRow][randColumn] == nil {
 
-		randRow = rand.Intn(len(g.grid))
-		randColumn = rand.Intn(len(g.grid[randRow]))
+		randRow = rand.Intn(len(g.Grid))
+		randColumn = rand.Intn(len(g.Grid[randRow]))
 	}
 
-	return g.grid[randRow][randColumn]
+	return g.Grid[randRow][randColumn]
 }
 
 // instead of taking in a grid take in an interface with get shape and cell contents
-func print(sh ShapeHolder) {
+func Print(sh ShapeHolder) {
 
-	g := sh.getShape()
+	g := sh.GetShape()
 
 	// build top and bottom strings as the rows go
 	var top strings.Builder
@@ -144,22 +144,22 @@ func print(sh ShapeHolder) {
 
 	// top
 	fmt.Print("+")
-	for columns := 0; columns < g.columns; columns++ {
+	for columns := 0; columns < g.Columns; columns++ {
 		fmt.Print("---+")
 	}
 	fmt.Print("\n")
 
-	for row := 0; row < g.rows; row++ {
+	for row := 0; row < g.Rows; row++ {
 		top.WriteString("|")
 		bottom.WriteString("+")
-		for cellIndex := 0; cellIndex < g.columns; cellIndex++ {
+		for cellIndex := 0; cellIndex < g.Columns; cellIndex++ {
 
 			var c *cell.BaseCell
 
-			if g.grid[row][cellIndex] == nil {
+			if g.Grid[row][cellIndex] == nil {
 				c = cell.CreateBaseCell(-1, -1)
 			} else {
-				c = g.grid[row][cellIndex].(*cell.BaseCell)
+				c = g.Grid[row][cellIndex].(*cell.BaseCell)
 			}
 
 			cellbody := fmt.Sprintf(" %s ", " ")
@@ -197,9 +197,9 @@ func print(sh ShapeHolder) {
 	}
 }
 
-func printDistanceGrid(dg *DistancesGrid) {
+func PrintDistanceGrid(dg *DistancesGrid) {
 
-	g := dg.getShape()
+	g := dg.GetShape()
 	_, max := dg.Distances.Max()
 	maxSpaces := DigitsInInt(max)
 	trail := strings.Repeat(" ", maxSpaces)
@@ -211,22 +211,22 @@ func printDistanceGrid(dg *DistancesGrid) {
 
 	// top
 	fmt.Print("+")
-	for columns := 0; columns < g.columns; columns++ {
+	for columns := 0; columns < g.Columns; columns++ {
 		fmt.Print(dashes + "--+")
 	}
 	fmt.Print("\n")
 
-	for row := 0; row < g.rows; row++ {
+	for row := 0; row < g.Rows; row++ {
 		top.WriteString("|")
 		bottom.WriteString("+")
-		for cellIndex := 0; cellIndex < g.columns; cellIndex++ {
+		for cellIndex := 0; cellIndex < g.Columns; cellIndex++ {
 
 			var c *cell.BaseCell
 
-			if g.grid[row][cellIndex] == nil {
+			if g.Grid[row][cellIndex] == nil {
 				c = cell.CreateBaseCell(-1, -1)
 			} else {
-				c = g.grid[row][cellIndex].(*cell.BaseCell)
+				c = g.Grid[row][cellIndex].(*cell.BaseCell)
 			}
 
 			cellbody := fmt.Sprintf(" %s ", dg.ContentsOf(c))

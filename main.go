@@ -1,5 +1,7 @@
 package main
 
+import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+
 /*
 	Create a draw line function
 		- find slope between two points
@@ -52,9 +54,13 @@ func main() {
 	// dg := &DistancesGrid{Distances: dist, Shape: pg1.Shape}
 	// print(dg)
 
-	bg := CreatePlainGrid(14, 10)
-	RecursiveBacktracking(bg)
-	Braid(bg, .5)
-	bg.png("./images/test_output/inset_test", 100, 0.1)
-	bg.toPNG("./images/test_output/no_inset_test", 100)
+	// bg := grid.CreatePlainGrid(20, 20)
+	// HuntAndKill(bg)
+	// grid.Braid(bg, .2)
+	// bg.Png("./images/test_output/inset_test", 100, 0.1)
+	// bg.ToPNG("./images/test_output/no_inset_test", 100)
+
+	wg := grid.CreateWeaveGrid(20, 20)
+	RecursiveBacktracking(wg)
+	wg.ToPNG("./images/test_output/weave_test", 100)
 }

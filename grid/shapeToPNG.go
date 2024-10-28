@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
@@ -15,12 +15,12 @@ func PixelsFromShape(sh ShapeHolder, cellWidth, cellHeight int) [][]*imagehandli
 	// Get number of Cells in row and number of rows
 	// image will be number of Cells in row * cellWidth wide
 	// image will be number of rows * cellHeight high
-	g := sh.getShape()
+	g := sh.GetShape()
 
-	pixels := make([][]*imagehandling.Pixel, len(g.grid)*cellHeight)
+	pixels := make([][]*imagehandling.Pixel, len(g.Grid)*cellHeight)
 	// loop
 	for pixelY := 0; pixelY < len(pixels); pixelY++ {
-		pixels[pixelY] = make([]*imagehandling.Pixel, len(g.grid[0])*cellWidth)
+		pixels[pixelY] = make([]*imagehandling.Pixel, len(g.Grid[0])*cellWidth)
 
 		for pixelX := 0; pixelX < len(pixels[pixelY]); pixelX++ {
 
@@ -36,14 +36,14 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 
 	black := &imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
 
-	g := sh.getShape()
+	g := sh.GetShape()
 
-	cellWidth := len(pixels[0]) / g.columns
-	cellHeight := len(pixels) / g.rows
+	cellWidth := len(pixels[0]) / g.Columns
+	cellHeight := len(pixels) / g.Rows
 	// worry about this later
-	for row := 0; row < g.rows; row++ {
-		for column := 0; column < g.columns; column++ {
-			var c cell.Cell = g.grid[row][column]
+	for row := 0; row < g.Rows; row++ {
+		for column := 0; column < g.Columns; column++ {
+			var c cell.Cell = g.Grid[row][column]
 			if c == nil {
 				// later fill in or ignore
 				continue
@@ -54,7 +54,7 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 					return nil
 				}
 
-				c = g.grid[row][column]
+				c = g.Grid[row][column]
 				topLeft := []int{cellHeight * (row), cellWidth * (column)}
 				bottomLeft := []int{cellHeight*(row+1) - 1, cellWidth * (column)}
 				bottomRight := []int{cellHeight*(row+1) - 1, cellWidth*(column+1) - 1}

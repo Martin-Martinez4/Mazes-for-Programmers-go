@@ -4,15 +4,16 @@ import (
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
 // Random walk with loop erasing
-func Wilsons(sh ShapeHolder) {
-	unvisited := make([]cell.Cell, sh.getShape().size)
+func Wilsons(sh grid.ShapeHolder) {
+	unvisited := make([]cell.Cell, sh.GetShape().Size)
 
-	grid := sh.getShape().grid
-	rows := sh.getShape().rows
-	columns := sh.getShape().columns
+	grid := sh.GetShape().Grid
+	rows := sh.GetShape().Rows
+	columns := sh.GetShape().Columns
 
 	for row := 0; row < rows; row++ {
 		for column := 0; column < columns; column++ {

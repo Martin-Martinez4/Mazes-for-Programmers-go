@@ -1,5 +1,7 @@
 package main
 
+// Not used in the project any more
+
 // all digits 0-9
 // then A-Z
 // then a-z

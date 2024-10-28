@@ -4,16 +4,17 @@ import (
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
 // Randomw walk like in aldousBroder
 // but when a loop happens look for a unvisited cell with a visited neighbor
 
-func HuntAndKill(sh ShapeHolder) {
-	current := sh.getShape().randomCell()
-	grid := sh.getShape().grid
-	rows := sh.getShape().rows
-	columns := sh.getShape().columns
+func HuntAndKill(sh grid.ShapeHolder) {
+	current := sh.GetShape().RandomCell()
+	grid := sh.GetShape().Grid
+	rows := sh.GetShape().Rows
+	columns := sh.GetShape().Columns
 
 	for current != nil {
 		unvisitedNeighbors := unvisitedNeighbors(current)

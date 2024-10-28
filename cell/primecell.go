@@ -7,6 +7,10 @@ type PrimeCell struct {
 	weight int
 }
 
+func CreatePrimeCell(row, column int) *PrimeCell {
+	return &PrimeCell{row: row, column: column, weight: 1}
+}
+
 func (p *PrimeCell) Row() int {
 	return p.row
 }

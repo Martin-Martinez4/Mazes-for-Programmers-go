@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
@@ -20,9 +20,9 @@ func CreateMaskGrid(mask *Mask) *MaskGrid {
 	columns := mask.columns
 
 	shape := &Shape{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		Rows:    rows,
+		Columns: columns,
+		Size:    rows * columns,
 	}
 
 	prepareMaskGrid(shape, mask)
@@ -35,17 +35,17 @@ func (pg *MaskGrid) ContentsOf(cell cell.Cell) string {
 	return " "
 }
 
-func (pg *MaskGrid) getShape() *Shape {
+func (pg *MaskGrid) GetShape() *Shape {
 	return pg.Shape
 }
 
 func prepareMaskGrid(g *Shape, mask *Mask) {
-	grid := make([][]cell.Cell, g.rows)
+	grid := make([][]cell.Cell, g.Rows)
 
-	for row := 0; row < g.rows; row++ {
-		grid[row] = make([]cell.Cell, g.columns)
+	for row := 0; row < g.Rows; row++ {
+		grid[row] = make([]cell.Cell, g.Columns)
 
-		for column := 0; column < g.columns; column++ {
+		for column := 0; column < g.Columns; column++ {
 			if mask.isOn(row, column) {
 
 				grid[row][column] = cell.CreateBaseCell(row, column)
@@ -56,10 +56,10 @@ func prepareMaskGrid(g *Shape, mask *Mask) {
 		}
 	}
 
-	g.grid = grid
+	g.Grid = grid
 }
 
-func (pg *MaskGrid) toPNG(filepath string, cellSize int) {
+func (pg *MaskGrid) ToPNG(filepath string, cellSize int) {
 	pixs := PixelsFromShape(pg, cellSize, cellSize)
 	withWalls := drawWalls(pg, pixs, 2)
 	imagehandling.WritePNGFromPixels(filepath, withWalls)

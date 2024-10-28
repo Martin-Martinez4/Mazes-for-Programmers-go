@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"math/rand"
@@ -7,15 +7,15 @@ import (
 )
 
 type ShapeHolder interface {
-	getShape() *Shape
-	toPNG(filepath string, cellSize int)
+	GetShape() *Shape
+	ToPNG(filepath string, cellSize int)
 	ContentsOf(cell.Cell) string
 }
 
 func deadEnds(sh ShapeHolder) []cell.Cell {
-	grid := sh.getShape().grid
-	rows := sh.getShape().rows
-	columns := sh.getShape().columns
+	grid := sh.GetShape().Grid
+	rows := sh.GetShape().Rows
+	columns := sh.GetShape().Columns
 
 	deadEnds := []cell.Cell{}
 
@@ -45,7 +45,7 @@ func bestBraidCandidate(cells []cell.Cell) cell.Cell {
 
 func Braid(sh ShapeHolder, percentBraided float32) {
 	deadEnds := deadEnds(sh)
-	Shuffle(deadEnds)
+	shuffle(deadEnds)
 
 	if percentBraided > 1 {
 		percentBraided = 1

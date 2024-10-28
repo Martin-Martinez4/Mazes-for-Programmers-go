@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"image"
@@ -20,9 +20,9 @@ type PolarGrid struct {
 
 func CreatePolarGrid(rows int) *PolarGrid {
 	shape := &Shape{
-		rows:    rows,
-		columns: 1,
-		size:    rows * 1,
+		Rows:    rows,
+		Columns: 1,
+		Size:    rows * 1,
 	}
 	pg := &PolarGrid{Shape: shape}
 
@@ -41,7 +41,7 @@ func (pg *PolarGrid) getShape() *Shape {
 }
 
 func (pg *PolarGrid) GetCell(row int, column int) cell.Cell {
-	grid := pg.getShape().grid
+	grid := pg.getShape().Grid
 	if row >= 0 && row <= len(grid)-1 {
 		c := column % len(grid[row])
 		if c < 0 {
@@ -55,9 +55,9 @@ func (pg *PolarGrid) GetCell(row int, column int) cell.Cell {
 // this is going to need to be reworked
 func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 	shape := pg.getShape()
-	grid := shape.grid
+	grid := shape.Grid
 
-	imgSize := 2 * shape.rows * cellSize
+	imgSize := 2 * shape.Rows * cellSize
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
@@ -75,8 +75,8 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 
 	center := imgSize / 2
 
-	for row := 1; row < len(pg.getShape().grid); row++ {
-		for column := 0; column < len(pg.getShape().grid[row]); column++ {
+	for row := 1; row < len(pg.getShape().Grid); row++ {
+		for column := 0; column < len(pg.getShape().Grid[row]); column++ {
 
 			// c := grid[row][column]
 			c := pg.GetCell(row, column)
@@ -108,7 +108,7 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 			if !c2.IsLinked(c2.Cw) {
 				drw.StraightLine(cx, cy, dx, dy, pixels, wall)
 			}
-			if c2.Row() == len(pg.getShape().grid)-1 {
+			if c2.Row() == len(pg.getShape().Grid)-1 {
 				drw.StraightLine(bx, by, dx, dy, pixels, wall)
 			}
 
@@ -121,7 +121,7 @@ func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
 
 func preparePolarGrid(pg *PolarGrid) {
 
-	rs := pg.getShape().rows
+	rs := pg.getShape().Rows
 
 	rows := make([][]cell.Cell, rs)
 
@@ -152,47 +152,14 @@ func preparePolarGrid(pg *PolarGrid) {
 		rows[row] = tmp
 	}
 
-	pg.getShape().grid = rows
-	pg.Shape.size = size
+	pg.getShape().Grid = rows
+	pg.Shape.Size = size
 
 }
 
 func configurePolarCells(pg *PolarGrid) {
-	// rows := pg.getShape().rows
-	grid := pg.getShape().grid
+	grid := pg.getShape().Grid
 
-	// for _, row := range grid {
-	// 	for _, c := range row {
-
-	// 		c := c.(*cell.PolarCell)
-	// 		ro, col := c.Row(), c.Column()
-
-	// 		if ro > 0 {
-	// 			if col == 0 {
-
-	// 				c.Ccw = nil
-
-	// 			} else {
-	// 				c.Ccw = grid[ro][col-1].(*cell.PolarCell)
-
-	// 			}
-
-	// 			if col == len(grid[ro])-1 {
-
-	// 				c.Cw = nil
-
-	// 			} else {
-	// 				c.Cw = grid[ro][col+1].(*cell.PolarCell)
-
-	// 			}
-
-	// 			ratio := float64(len(grid[ro])) / float64(len(grid[ro-1]))
-	// 			parent := grid[ro-1][int(float64(col)/ratio)].(*cell.PolarCell)
-	// 			parent.Outward = append(parent.Outward, c)
-	// 			c.Inward = parent
-	// 		}
-	// 	}
-	// }
 	for row := 0; row < len(grid); row++ {
 		for column := 0; column < len(grid[row]); column++ {
 

@@ -4,19 +4,20 @@ import (
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
-func Sidewinder(sh ShapeHolder) {
-	grid := sh.getShape()
+func Sidewinder(sh grid.ShapeHolder) {
+	grid := sh.GetShape()
 
 	run := []cell.Cell{}
 
 	var c cell.Cell
 
-	for row := 0; row < grid.rows; row++ {
+	for row := 0; row < grid.Rows; row++ {
 
-		for column := 0; column < grid.columns; column++ {
-			c = grid.grid[row][column]
+		for column := 0; column < grid.Columns; column++ {
+			c = grid.Grid[row][column]
 			c2, ok := c.(*cell.BaseCell)
 			if !ok {
 				return

@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 func TestDistances(t *testing.T) {
 	grid1 := CreateShape(2, 2)
 
-	g1c00 := grid1.grid[0][0]
+	g1c00 := grid1.Grid[0][0]
 	distances := cell.CreateDistances(g1c00)
 
 	if distances.Cells[g1c00] != 0 {
@@ -18,10 +18,10 @@ func TestDistances(t *testing.T) {
 
 	grid1 = CreateShape(2, 2)
 
-	g1c00 = grid1.grid[0][0]
-	g1c01 := grid1.grid[0][1]
-	g1c10 := grid1.grid[1][0]
-	g1c11 := grid1.grid[1][1]
+	g1c00 = grid1.Grid[0][0]
+	g1c01 := grid1.Grid[0][1]
+	g1c10 := grid1.Grid[1][0]
+	g1c11 := grid1.Grid[1][1]
 
 	g1c00.Link(g1c01)
 	g1c00.Link(g1c10)
@@ -44,17 +44,17 @@ func TestDistances(t *testing.T) {
 
 	grid1 = CreateShape(3, 3)
 
-	g1c00 = grid1.grid[0][0]
-	g1c01 = grid1.grid[0][1]
-	g1c02 := grid1.grid[0][2]
+	g1c00 = grid1.Grid[0][0]
+	g1c01 = grid1.Grid[0][1]
+	g1c02 := grid1.Grid[0][2]
 
-	g1c10 = grid1.grid[1][0]
-	g1c11 = grid1.grid[1][1]
-	g1c12 := grid1.grid[1][2]
+	g1c10 = grid1.Grid[1][0]
+	g1c11 = grid1.Grid[1][1]
+	g1c12 := grid1.Grid[1][2]
 
-	g1c20 := grid1.grid[2][0]
-	g1c21 := grid1.grid[2][1]
-	g1c22 := grid1.grid[2][2]
+	g1c20 := grid1.Grid[2][0]
+	g1c21 := grid1.Grid[2][1]
+	g1c22 := grid1.Grid[2][2]
 
 	type test struct {
 		name     string

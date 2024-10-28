@@ -1,4 +1,4 @@
-package main
+package grid
 
 import (
 	"image"
@@ -15,9 +15,9 @@ type PlainGrid struct {
 
 func CreatePlainGrid(rows, columns int) *PlainGrid {
 	shape := &Shape{
-		rows:    rows,
-		columns: columns,
-		size:    rows * columns,
+		Rows:    rows,
+		Columns: columns,
+		Size:    rows * columns,
 	}
 
 	prepareGrid(shape)
@@ -30,23 +30,23 @@ func (pg *PlainGrid) ContentsOf(c cell.Cell) string {
 	return " "
 }
 
-func (pg *PlainGrid) getShape() *Shape {
+func (pg *PlainGrid) GetShape() *Shape {
 	return pg.Shape
 }
 
-func (pg *PlainGrid) toPNG(filepath string, cellSize int) {
+func (pg *PlainGrid) ToPNG(filepath string, cellSize int) {
 	pixs := PixelsFromShape(pg, cellSize, cellSize)
 	withWalls := drawWalls(pg, pixs, 2)
 	imagehandling.WritePNGFromPixels(filepath, withWalls)
 
 }
 
-func (pg *PlainGrid) png(filepath string, cellSize int, inset float32) {
+func (pg *PlainGrid) Png(filepath string, cellSize int, inset float32) {
 
-	grid := pg.getShape().grid
+	grid := pg.GetShape().Grid
 
-	imgWidth := cellSize * pg.getShape().columns
-	imgHeight := cellSize * pg.getShape().rows
+	imgWidth := cellSize * pg.GetShape().Columns
+	imgHeight := cellSize * pg.GetShape().Rows
 
 	insetInt := int(float32(cellSize) * inset)
 
@@ -63,7 +63,7 @@ func (pg *PlainGrid) png(filepath string, cellSize int, inset float32) {
 
 	for row := 0; row < len(grid); row++ {
 		for column := 0; column < len(grid[row]); column++ {
-			c := pg.getShape().GetCell(row, column)
+			c := pg.GetShape().GetCell(row, column)
 			if c == nil {
 				continue
 			}
