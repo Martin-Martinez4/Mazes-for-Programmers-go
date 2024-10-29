@@ -62,5 +62,5 @@ func main() {
 
 	wg := grid.CreateWeaveGrid(20, 20)
 	RecursiveBacktracking(wg)
-	wg.ToPNG("./images/test_output/weave_test", 100)
+	wg.ToPNG("./images/test_output/weave_test", 50)
 }

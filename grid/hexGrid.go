@@ -125,7 +125,7 @@ func configureHexCells(hg *HexGrid) {
 }
 
 // this is going to need to be reworked
-func (hg *HexGrid) toPNG(filepath string, size int) {
+func (hg *HexGrid) ToPNG(filepath string, size int) {
 	shape := hg.getShape()
 
 	aSize := size / 2.0

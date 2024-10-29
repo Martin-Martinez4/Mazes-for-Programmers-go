@@ -1,6 +1,8 @@
 package grid
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+)
 
 type OverUnderCell struct {
 	*cell.PrimeCell
@@ -35,20 +37,40 @@ func CreateUnderCell(ov *OverUnderCell) *OverUnderCell {
 		ov.North.South = uc
 		uc.South = ov.South
 		ov.South.North = uc
-		ov.Link(uc.North)
-		ov.Link(uc.South)
+		uc.Link(ov.North)
+		uc.Link(ov.South)
 
+	} else {
+		uc.East = ov.East
+		ov.East.West = uc
+		uc.West = ov.West
+		ov.West.East = uc
+
+		uc.Link(ov.East)
+		uc.Link(ov.West)
 	}
 
 	return uc
 }
 
-func (uc *OverUnderCell) HorizontalPassage() bool {
-	return uc.East != nil || uc.West != nil
+func (oc *OverUnderCell) HorizontalPassage() bool {
+	if oc.IsUnder {
+
+		return oc.East != nil || oc.West != nil
+	} else {
+		return oc.IsLinked(oc.East) && oc.IsLinked(oc.West) && !oc.IsLinked(oc.North) && !oc.IsLinked(oc.South)
+
+	}
 }
 
-func (uc *OverUnderCell) VerticalPassage() bool {
-	return uc.North != nil || uc.South != nil
+func (oc *OverUnderCell) VerticalPassage() bool {
+	if oc.IsUnder {
+
+		return oc.North != nil || oc.South != nil
+	} else {
+		return !oc.IsLinked(oc.East) && !oc.IsLinked(oc.West) && oc.IsLinked(oc.North) && oc.IsLinked(oc.South)
+
+	}
 }
 
 func (oc *OverUnderCell) CanTunnelNorth() bool {
@@ -89,42 +111,160 @@ func (oc *OverUnderCell) CanTunnelWest() bool {
 
 }
 
-func (oc *OverUnderCell) HorizontalPassage() bool {
-	return oc.IsLinked(oc.East) && oc.IsLinked(oc.West) && !oc.IsLinked(oc.East) && !oc.IsLinked(oc.West)
-}
-
-func (oc *OverUnderCell) VerticalPassage() bool {
-	return !oc.IsLinked(oc.East) && !oc.IsLinked(oc.West) && oc.IsLinked(oc.East) && oc.IsLinked(oc.West)
-}
-
 func (oc *OverUnderCell) Link(cel cell.Cell) {
-	var neighbor *cell.BaseCell
-	c, ok := cel.(*cell.BaseCell)
+	var neighbor *OverUnderCell
+
+	c, ok := cel.(*OverUnderCell)
 	if !ok {
-		return
+		panic("Failed to cast to OverUnderCell")
 	}
 
 	if oc.North != nil && oc.North == c.South {
 		neighbor = oc.North
-	}
-
-	if oc.South != nil && oc.South == c.North {
+	} else if oc.South != nil && oc.South == c.North {
 		neighbor = oc.South
-	}
-
-	if oc.East != nil && oc.East == c.West {
+	} else if oc.East != nil && oc.East == c.West {
 		neighbor = oc.East
-	}
-	if oc.West != nil && oc.West == c.East {
+	} else if oc.West != nil && oc.West == c.East {
 		neighbor = oc.West
 	}
 
-	c2, ok := cel.(*OverUnderCell)
+	if neighbor != nil {
+		oc.grid.TunnelUnder(neighbor)
+	} else {
+		if cel == nil {
+			return
+		}
+		c2, ok := cel.(*OverUnderCell)
+		if !ok {
+			panic("Failed to cast to OverUnderCell")
+		}
+
+		_, ok = oc.links[c2]
+		if !ok {
+			oc.links[c2] = true
+		}
+
+		_, ok = c2.links[oc]
+		if !ok {
+
+			c2.links[oc] = true
+		}
+	}
+}
+
+func (oc *OverUnderCell) Links() []cell.Cell {
+	cellLinks := []cell.Cell{}
+
+	for key, _ := range oc.links {
+		cellLinks = append(cellLinks, key)
+	}
+
+	return cellLinks
+}
+
+func (pc *OverUnderCell) Unlink(cell cell.Cell) {
+	if cell == nil {
+		return
+	}
+	c2, ok := cell.(*OverUnderCell)
 	if !ok {
 		return
 	}
 
-	if neighbor != nil {
-		oc.grid.TunnelUnder(c2)
+	delete(pc.links, c2)
+	delete(c2.links, pc)
+}
+
+func (pc *OverUnderCell) IsLinked(c cell.Cell) bool {
+
+	if c == nil {
+		return false
 	}
+	c2, ok := c.(*OverUnderCell)
+	if !ok {
+		return false
+	}
+	_, ok = pc.links[c2]
+
+	return ok
+}
+
+func (pc *OverUnderCell) Distances() *cell.Distances {
+	distances := cell.CreateDistances(pc)
+
+	// may have to change
+	frontier := cell.CreateQueue(40)
+
+	currentCell := pc
+	distances.Cells[currentCell] = 0
+
+	for currentCell != nil {
+		// may have to change
+		newFrontier := cell.CreateQueue(40)
+
+		for currentCell != nil {
+
+			for key, _ := range currentCell.links {
+
+				_, ok := distances.Cells[key]
+				if !ok {
+					newFrontier.Push(key)
+					distances.Cells[key] = distances.Cells[currentCell] + 1
+				}
+
+			}
+
+			c2, ok := frontier.Pop().(*OverUnderCell)
+			if !ok && c2 != nil {
+				return distances
+			}
+			currentCell = c2
+
+		}
+
+		frontier = newFrontier
+		c2, ok := frontier.Pop().(*OverUnderCell)
+		if !ok && c2 != nil {
+			return distances
+		}
+		currentCell = c2
+
+	}
+
+	return distances
+}
+
+func (oc *OverUnderCell) Neighbors() []cell.Cell {
+	var cells []cell.Cell
+
+	if oc.North != nil {
+		cells = append(cells, oc.North)
+	}
+	if oc.South != nil {
+		cells = append(cells, oc.South)
+	}
+	if oc.East != nil {
+		cells = append(cells, oc.East)
+	}
+	if oc.West != nil {
+		cells = append(cells, oc.West)
+	}
+
+	if oc.CanTunnelNorth() {
+		cells = append(cells, oc.North.North)
+	}
+
+	if oc.CanTunnelSouth() {
+		cells = append(cells, oc.South.South)
+	}
+	if oc.CanTunnelEast() {
+		cells = append(cells, oc.East.East)
+	}
+	if oc.CanTunnelWest() {
+		cells = append(cells, oc.West.West)
+	}
+
+	return cells
+
 }

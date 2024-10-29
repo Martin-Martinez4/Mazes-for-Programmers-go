@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
@@ -39,8 +38,4 @@ func BinaryTree(sh grid.ShapeHolder) {
 
 		}
 	}
-}
-
-func testa(a [][]cell.Cell) {
-	fmt.Println("test a")
 }

@@ -11,7 +11,7 @@ import (
 
 type WeaveGrid struct {
 	Shape      *Shape
-	UnderCells []*UnderCell
+	UnderCells []*OverUnderCell
 }
 
 func CreateWeaveGrid(rows, columns int) *WeaveGrid {
@@ -63,10 +63,12 @@ func (wg *WeaveGrid) ToPNG(filepath string, cellSize int) {
 				continue
 			}
 
+			cb := c.(*OverUnderCell)
+
 			x := column * cellSize
 			y := row * cellSize
 
-			wg.withInset(img, c, cellSize, x, y, insetInt, wall)
+			wg.withInset(img, cb, cellSize, x, y, insetInt, wall)
 
 		}
 	}
@@ -76,13 +78,11 @@ func (wg *WeaveGrid) ToPNG(filepath string, cellSize int) {
 	imagehandling.WritePNGFromPixels(filepath, pixels)
 }
 
-func (wg *WeaveGrid) withInset(img *image.RGBA, c cell.Cell, cellSize, x, y, inset int, wall color.RGBA) {
+func (wg *WeaveGrid) withInset(img *image.RGBA, c *OverUnderCell, cellSize, x, y, inset int, wall color.RGBA) {
 	x1, x2, x3, x4, y1, y2, y3, y4 := cellCoordsWithInset(x, y, cellSize, inset)
 
-	c2, ok := c.(*OverCell)
-	if ok {
-
-		if c2.IsLinked(c2.North) {
+	if !c.IsUnder {
+		if c.IsLinked(c.North) {
 			draw.StraightLine2(x2, y1, x2, y2, img, wall)
 			draw.StraightLine2(x3, y1, x3, y2, img, wall)
 		} else {
@@ -90,7 +90,7 @@ func (wg *WeaveGrid) withInset(img *image.RGBA, c cell.Cell, cellSize, x, y, ins
 
 		}
 
-		if c2.IsLinked(c2.South) {
+		if c.IsLinked(c.South) {
 			draw.StraightLine2(x2, y3, x2, y4, img, wall)
 			draw.StraightLine2(x3, y3, x3, y4, img, wall)
 		} else {
@@ -98,7 +98,7 @@ func (wg *WeaveGrid) withInset(img *image.RGBA, c cell.Cell, cellSize, x, y, ins
 
 		}
 
-		if c2.IsLinked(c2.West) {
+		if c.IsLinked(c.West) {
 			draw.StraightLine2(x1, y2, x2, y2, img, wall)
 			draw.StraightLine2(x1, y3, x2, y3, img, wall)
 		} else {
@@ -106,7 +106,7 @@ func (wg *WeaveGrid) withInset(img *image.RGBA, c cell.Cell, cellSize, x, y, ins
 
 		}
 
-		if c2.IsLinked(c2.East) {
+		if c.IsLinked(c.East) {
 			draw.StraightLine2(x3, y2, x4, y2, img, wall)
 			draw.StraightLine2(x3, y3, x4, y3, img, wall)
 		} else {
@@ -114,21 +114,19 @@ func (wg *WeaveGrid) withInset(img *image.RGBA, c cell.Cell, cellSize, x, y, ins
 
 		}
 	} else {
-		c2, ok := c.(*UnderCell)
-		if !ok {
-			return
-		}
 
-		if c2.VerticalPassage() {
-			draw.StraightLine2(x2, y1, x2, y2, img, wall)
-			draw.StraightLine2(x3, y1, x3, y2, img, wall)
-			draw.StraightLine2(x2, y3, x2, y4, img, wall)
-			draw.StraightLine2(x3, y3, x3, y4, img, wall)
+		color := color.RGBA{R: 255, G: 0, B: 0, A: 255}
+
+		if c.VerticalPassage() {
+			draw.StraightLine2(x2, y1, x2, y2, img, color)
+			draw.StraightLine2(x3, y1, x3, y2, img, color)
+			draw.StraightLine2(x2, y3, x2, y4, img, color)
+			draw.StraightLine2(x3, y3, x3, y4, img, color)
 		} else {
-			draw.StraightLine2(x1, y2, x2, y2, img, wall)
-			draw.StraightLine2(x1, y3, x2, y3, img, wall)
-			draw.StraightLine2(x3, y2, x4, y2, img, wall)
-			draw.StraightLine2(x3, y3, x4, y3, img, wall)
+			draw.StraightLine2(x1, y2, x2, y2, img, color)
+			draw.StraightLine2(x1, y3, x2, y3, img, color)
+			draw.StraightLine2(x3, y2, x4, y2, img, color)
+			draw.StraightLine2(x3, y3, x4, y3, img, color)
 		}
 	}
 
@@ -142,7 +140,7 @@ func configureWeaveCells(g *Shape) {
 			c := g.Grid[row][column]
 
 			if c != nil {
-				c2, ok := c.(*OverCell)
+				c2, ok := c.(*OverUnderCell)
 				if !ok {
 					return
 				}
@@ -154,9 +152,10 @@ func configureWeaveCells(g *Shape) {
 
 						c2.North = nil
 					} else {
-						c2.North = c.(*OverCell)
+						c2.North = c.(*OverUnderCell)
 					}
 
+					// c2.North = g.grid[row-1][column].(*OverUnderCell)
 				}
 
 				if row < g.Rows-1 {
@@ -166,9 +165,10 @@ func configureWeaveCells(g *Shape) {
 
 						c2.South = nil
 					} else {
-						c2.South = c.(*OverCell)
+						c2.South = c.(*OverUnderCell)
 					}
 
+					// c2.South = g.grid[row+1][column].(*OverUnderCell)
 				}
 
 				if column > 0 {
@@ -178,7 +178,7 @@ func configureWeaveCells(g *Shape) {
 
 						c2.West = nil
 					} else {
-						c2.West = c.(*OverCell)
+						c2.West = c.(*OverUnderCell)
 					}
 				}
 
@@ -188,7 +188,7 @@ func configureWeaveCells(g *Shape) {
 
 						c2.East = nil
 					} else {
-						c2.East = c.(*OverCell)
+						c2.East = c.(*OverUnderCell)
 					}
 
 				}
@@ -198,17 +198,21 @@ func configureWeaveCells(g *Shape) {
 }
 
 // It adds an under cell
-func (wg *WeaveGrid) TunnelUnder(overCell *OverCell) {
+func (wg *WeaveGrid) TunnelUnder(overCell *OverUnderCell) {
 	uc := CreateUnderCell(overCell)
 	wg.UnderCells = append(wg.UnderCells, uc)
 }
 
 func prepareWeaveGrid(shape *Shape, wg *WeaveGrid) {
-	shape.Grid = make([][]cell.Cell, shape.Rows)
-	for row := 0; row < shape.Rows; row++ {
-		shape.Grid[row] = make([]cell.Cell, shape.Columns)
-		for column := 0; column < shape.Columns; column++ {
-			shape.Grid[row][column] = CreateOverCell(row, column, wg)
+	grid := make([][]cell.Cell, wg.Shape.Rows)
+
+	for row := 0; row < wg.Shape.Rows; row++ {
+		grid[row] = make([]cell.Cell, wg.Shape.Columns)
+
+		for column := 0; column < wg.Shape.Columns; column++ {
+			grid[row][column] = CreateOverCell(row, column, wg)
 		}
 	}
+
+	shape.Grid = grid
 }

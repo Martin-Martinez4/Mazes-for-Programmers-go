@@ -53,7 +53,7 @@ func (pg *PolarGrid) GetCell(row int, column int) cell.Cell {
 }
 
 // this is going to need to be reworked
-func (pg *PolarGrid) toPNG(filepath string, cellSize int) {
+func (pg *PolarGrid) ToPNG(filepath string, cellSize int) {
 	shape := pg.getShape()
 	grid := shape.Grid
 
