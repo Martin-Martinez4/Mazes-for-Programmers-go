@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 )
 
@@ -71,13 +70,25 @@ func main() {
 	// Prims(grid1)
 	// grid1.ToPNG("./images/test_output/prim_test", 50)
 
-	grid1 := grid.CreatePlainGrid(20, 20)
-	GrowingTree(grid1, func(cells []cell.Cell) cell.Cell {
-		return cells[len(cells)-1]
-	})
-	grid1.ToPNG("./images/test_output/growing_tree_test", 50)
+	// grid1 := grid.CreatePlainGrid(20, 20)
+	// GrowingTree(grid1, func(cells []cell.Cell) cell.Cell {
+	// 	return cells[len(cells)-1]
+	// })
+	// grid1.ToPNG("./images/test_output/growing_tree_test", 50)
 
-	grid2 := grid.CreatePlainGrid(20, 20)
-	Prims(grid2)
-	grid2.ToPNG("./images/test_output/prim_test", 50)
+	// grid2 := grid.CreatePlainGrid(20, 20)
+	// Prims(grid2)
+	// grid2.ToPNG("./images/test_output/prim_test", 50)
+
+	// grid2 := grid.CreatePlainGrid(20, 20)
+	// Eullers(grid2)
+	// grid2.ToPNG("./images/test_output/eullers_test", 50)
+
+	g := grid.CreatePlainGrid(30, 30)
+	RecursveDivision(g)
+	g.ToPNG("./images/test_output/recursve_division", 50)
+
+	g = grid.CreatePlainGrid(30, 30)
+	RecursveDivision(g)
+	g.ToPNG("./images/test_output/recursve_division_rooms", 50)
 }
