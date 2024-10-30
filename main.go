@@ -5,12 +5,8 @@ import (
 )
 
 /*
-	Create a draw line function
-		- find slope between two points
-		- use point slope formula in a loop to draw the pixels
-
-		- if line is vertical (x_2 - x_1) is zero
-			- Run Draw Veritcal line function
+	Implement the each cell method to make algorithms work with 2D and 3D mazes.
+	The 2D one can be implemented on the shape so that it gets inherited.
 */
 
 func main() {
