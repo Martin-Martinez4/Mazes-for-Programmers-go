@@ -45,7 +45,7 @@ func bestBraidCandidate(cells []cell.Cell) cell.Cell {
 
 func Braid(sh ShapeHolder, percentBraided float32) {
 	deadEnds := deadEnds(sh)
-	shuffle(deadEnds)
+	Shuffle(deadEnds)
 
 	if percentBraided > 1 {
 		percentBraided = 1

@@ -1,7 +1,6 @@
 package cell
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -44,7 +43,6 @@ func (pq *PriorityQueue) Push(x Cell) {
 			}
 		}
 
-		fmt.Println("index: ", index)
 		*pq = append(*pq, (*pq)[len(*pq)-1])
 		copy((*pq)[index+1:], (*pq)[index:len(*pq)-1])
 		(*pq)[index+1] = x

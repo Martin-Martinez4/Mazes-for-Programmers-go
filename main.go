@@ -1,6 +1,9 @@
 package main
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+)
 
 /*
 	Create a draw line function
@@ -60,7 +63,21 @@ func main() {
 	// bg.Png("./images/test_output/inset_test", 100, 0.1)
 	// bg.ToPNG("./images/test_output/no_inset_test", 100)
 
-	wg := grid.CreateWeaveGrid(20, 20)
-	RecursiveBacktracking(wg)
-	wg.ToPNG("./images/test_output/weave_test", 50)
+	// wg := grid.CreateWeaveGrid(20, 20)
+	// RecursiveBacktracking(wg)
+	// wg.ToPNG("./images/test_output/weave_test", 50)
+
+	// grid1 := grid.CreatePlainGrid(10, 10)
+	// Prims(grid1)
+	// grid1.ToPNG("./images/test_output/prim_test", 50)
+
+	grid1 := grid.CreatePlainGrid(20, 20)
+	GrowingTree(grid1, func(cells []cell.Cell) cell.Cell {
+		return cells[len(cells)-1]
+	})
+	grid1.ToPNG("./images/test_output/growing_tree_test", 50)
+
+	grid2 := grid.CreatePlainGrid(20, 20)
+	Prims(grid2)
+	grid2.ToPNG("./images/test_output/prim_test", 50)
 }
