@@ -88,7 +88,10 @@ func main() {
 	// RecursveDivision(g)
 	// g.ToPNG("./images/test_output/recursve_division_rooms", 50)
 
-	g3d := grid.CreateGrid3D(2, 4, 4)
-	RecursiveBacktracking(g3d)
-	g3d.ToPNG("./images/test_output/grid_3D", 50, 10, .1)
+	// g3d := grid.CreateGrid3D(2, 4, 4)
+	// RecursiveBacktracking(g3d)
+	// g3d.ToPNG("./images/test_output/grid_3D", 50, 10, .1)
+
+	cgg := grid.CreateCubeGrid(4)
+	cgg.ToPNG("./images/test_output/cube_outline", 50, .1)
 }

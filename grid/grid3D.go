@@ -74,6 +74,25 @@ func (g3d *Grid3D) RandomCell() cell.Cell {
 	return g3d.GetCell(randLevel, randRow, randColumn)
 }
 
+func (g *Grid3D) EachCell() <-chan cell.Cell {
+	ch := make(chan cell.Cell, 1)
+	go func() {
+		for lv := 0; lv < len(g.Grid); lv++ {
+
+			for row := 0; row < len(g.Grid[lv]); row++ {
+				for column := 0; column < len(g.Grid[lv][row]); column++ {
+					c := g.Grid[lv][row][column]
+					if c != nil {
+						ch <- c
+					}
+				}
+			}
+		}
+		close(ch)
+	}()
+	return ch
+}
+
 func prepareGrid3D(g3d *Grid3D) {
 	levels := g3d.Levels
 	g := make([][][]cell.Cell, levels)

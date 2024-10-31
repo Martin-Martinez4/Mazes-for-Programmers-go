@@ -178,22 +178,6 @@ func (hg *HexGrid) ToPNG(filepath string, size int) {
 			yM := int(cy)
 			yS := int(cy + bSize)
 
-			// if mode == BACKGROUND {
-			// 	color := pixels[row][column]
-
-			// 	points := [][]int{
-			// 		{xFW, yM},
-			// 		{xNW, yN},
-			// 		{xNE, yN},
-			// 		{xFE, yM},
-			// 		{xNE, yS},
-			// 		{xNW, yS},
-			// 	}
-
-			// 	// draw line with sliding window?
-			// 	for i := 0;
-			// } else {
-
 			if cell.SouthWest == nil {
 				draw.StraightLine2(xFW, yM, xNW, yS, img, black)
 			}
