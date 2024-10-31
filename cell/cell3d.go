@@ -27,7 +27,7 @@ func CreateCell3D(level, row, column int) *Cell3D {
 func (c3D *Cell3D) Links() []Cell {
 	cellLinks := []Cell{}
 
-	for key, _ := range c3D.links {
+	for key := range c3D.links {
 		cellLinks = append(cellLinks, key)
 	}
 

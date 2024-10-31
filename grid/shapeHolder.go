@@ -8,11 +8,12 @@ import (
 
 type ShapeHolder interface {
 	GetShape() *Shape
-	ToPNG(filepath string, cellSize int)
+	// ToPNG(filepath string, cellSize int)
 	ContentsOf(cell.Cell) string
 	EachCell() <-chan cell.Cell
 	Rows() int
 	Columns() int
+	RandomCell() cell.Cell
 }
 
 func deadEnds(sh ShapeHolder) []cell.Cell {

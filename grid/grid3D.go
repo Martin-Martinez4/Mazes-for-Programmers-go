@@ -40,16 +40,16 @@ func (g3d *Grid3D) ContentsOf(c cell.Cell) string {
 	return " "
 }
 
-func (g3d *Grid3D) getShape() *Shape {
+func (g3d *Grid3D) GetShape() *Shape {
 	return g3d.Shape
 }
 
-func (g3d *Grid3D) GetCell(level, row, column int) *cell.Cell3D {
+func (g3d *Grid3D) GetCell(level, row, column int) cell.Cell {
 	g := g3d.Grid
 	if (level >= 0 && level < len(g)) &&
 		(row >= 0 && row < len(g[level])) &&
 		(column >= 0 && column < len(g[level][row])) {
-		return g[level][row][column].(*cell.Cell3D)
+		return g[level][row][column]
 	}
 	return nil
 }
@@ -59,18 +59,19 @@ func (g3d *Grid3D) RandomCell() cell.Cell {
 	g := g3d.Grid
 	// random int [0. rows)
 	// and.Intn(max-min) + min, but min is 0
-	randLevel := rand.Intn(len(g))
+	randLevel := rand.Intn(g3d.Levels)
 	randRow := rand.Intn(len(g[randLevel]))
 	randColumn := rand.Intn(len(g[randRow]))
 
-	for g[randLevel][randRow][randColumn] == nil {
+	for g3d.GetCell(randLevel, randRow, randColumn) == nil {
 
-		randLevel = rand.Intn(len(g))
+		randLevel = rand.Intn(g3d.Levels)
+
 		randRow = rand.Intn(len(g[randLevel]))
 		randColumn = rand.Intn(len(g[randRow]))
 	}
 
-	return g[randLevel][randRow][randColumn]
+	return g3d.GetCell(randLevel, randRow, randColumn)
 }
 
 func prepareGrid3D(g3d *Grid3D) {
@@ -102,12 +103,33 @@ func configureCells3D(g3d *Grid3D) {
 			for column := 0; column < len(grid[row]); column++ {
 				c := grid[lv][row][column].(*cell.Cell3D)
 
-				c.North = g3d.GetCell(lv, row-1, column)
-				c.South = g3d.GetCell(lv, row+1, column)
-				c.West = g3d.GetCell(lv, row, column-1)
-				c.East = g3d.GetCell(lv, row, column+1)
-				c.Down = g3d.GetCell(lv-1, row, column)
-				c.Up = g3d.GetCell(lv+1, row, column)
+				if g3d.GetCell(lv, row-1, column) != nil {
+
+					c.North = g3d.GetCell(lv, row-1, column).(*cell.Cell3D)
+				}
+
+				if g3d.GetCell(lv, row+1, column) != nil {
+
+					c.South = g3d.GetCell(lv, row+1, column).(*cell.Cell3D)
+				}
+
+				if g3d.GetCell(lv, row, column-1) != nil {
+
+					c.West = g3d.GetCell(lv, row, column-1).(*cell.Cell3D)
+				}
+
+				if g3d.GetCell(lv, row, column+1) != nil {
+
+					c.East = g3d.GetCell(lv, row, column+1).(*cell.Cell3D)
+				}
+				if g3d.GetCell(lv-1, row, column) != nil {
+
+					c.Down = g3d.GetCell(lv-1, row, column).(*cell.Cell3D)
+				}
+				if g3d.GetCell(lv+1, row, column) != nil {
+
+					c.Up = g3d.GetCell(lv+1, row, column).(*cell.Cell3D)
+				}
 			}
 		}
 	}
@@ -141,7 +163,7 @@ func (g3d *Grid3D) ToPNG(filepath string, size, margin int, inset float32) {
 	for lv := 0; lv < g3d.Levels; lv++ {
 		for row := 0; row < len(grid[lv]); row++ {
 			for column := 0; column < len(grid[lv][row]); column++ {
-				c := g3d.GetCell(lv, row, column)
+				c := g3d.GetCell(lv, row, column).(*cell.Cell3D)
 
 				x := lv*(gridWidth+margin) + column*size
 				y := row * size

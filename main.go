@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+import (
+	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
+)
 
 /*
 	Implement the each cell method to make algorithms work with 2D and 3D mazes.
@@ -87,5 +89,6 @@ func main() {
 	// g.ToPNG("./images/test_output/recursve_division_rooms", 50)
 
 	g3d := grid.CreateGrid3D(2, 4, 4)
+	RecursiveBacktracking(g3d)
 	g3d.ToPNG("./images/test_output/grid_3D", 50, 10, .1)
 }

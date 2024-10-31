@@ -10,8 +10,8 @@ import (
 func GrowingTree(sh grid.ShapeHolder, getCell func(cells []cell.Cell) cell.Cell) {
 	grid := sh.GetShape().Grid
 
-	randRow := rand.Intn(len(grid))
-	randCol := rand.Intn(len(grid[randRow]))
+	randRow := rand.Intn(sh.Rows())
+	randCol := rand.Intn(sh.Columns())
 
 	active := []cell.Cell{grid[randRow][randCol]}
 
