@@ -27,7 +27,7 @@ func CreateCell3D(level, row, column int) *Cell3D {
 func (c3D *Cell3D) Links() []Cell {
 	cellLinks := []Cell{}
 
-	for key := range c3D.links {
+	for key, _ := range c3D.links {
 		cellLinks = append(cellLinks, key)
 	}
 
@@ -148,7 +148,7 @@ func (c3D *Cell3D) Neighbors() []Cell {
 	}
 
 	if c3D.Down != nil {
-		neighs = append(neighs, c3D.Up)
+		neighs = append(neighs, c3D.Down)
 	}
 
 	return neighs

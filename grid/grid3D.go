@@ -61,14 +61,14 @@ func (g3d *Grid3D) RandomCell() cell.Cell {
 	// and.Intn(max-min) + min, but min is 0
 	randLevel := rand.Intn(g3d.Levels)
 	randRow := rand.Intn(len(g[randLevel]))
-	randColumn := rand.Intn(len(g[randRow]))
+	randColumn := rand.Intn(len(g[randLevel][randRow]))
 
 	for g3d.GetCell(randLevel, randRow, randColumn) == nil {
 
 		randLevel = rand.Intn(g3d.Levels)
-
 		randRow = rand.Intn(len(g[randLevel]))
-		randColumn = rand.Intn(len(g[randRow]))
+		randColumn = rand.Intn(len(g[randLevel][randRow]))
+
 	}
 
 	return g3d.GetCell(randLevel, randRow, randColumn)
@@ -99,36 +99,51 @@ func configureCells3D(g3d *Grid3D) {
 	levels := g3d.Levels
 
 	for lv := 0; lv < levels; lv++ {
-		for row := 0; row < len(grid); row++ {
-			for column := 0; column < len(grid[row]); column++ {
-				c := grid[lv][row][column].(*cell.Cell3D)
+		for row := 0; row < len(grid[lv]); row++ {
+			for column := 0; column < len(grid[lv][row]); column++ {
+				c, ok := grid[lv][row][column].(*cell.Cell3D)
+				if !ok {
+					panic("Could not cast to cell.Cell3D")
+				}
 
 				if g3d.GetCell(lv, row-1, column) != nil {
 
 					c.North = g3d.GetCell(lv, row-1, column).(*cell.Cell3D)
+				} else {
+					c.North = nil
 				}
 
 				if g3d.GetCell(lv, row+1, column) != nil {
 
 					c.South = g3d.GetCell(lv, row+1, column).(*cell.Cell3D)
+				} else {
+					c.South = nil
 				}
 
 				if g3d.GetCell(lv, row, column-1) != nil {
 
 					c.West = g3d.GetCell(lv, row, column-1).(*cell.Cell3D)
+				} else {
+					c.West = nil
 				}
 
 				if g3d.GetCell(lv, row, column+1) != nil {
 
 					c.East = g3d.GetCell(lv, row, column+1).(*cell.Cell3D)
+				} else {
+					c.East = nil
 				}
 				if g3d.GetCell(lv-1, row, column) != nil {
 
 					c.Down = g3d.GetCell(lv-1, row, column).(*cell.Cell3D)
+				} else {
+					c.Down = nil
 				}
 				if g3d.GetCell(lv+1, row, column) != nil {
 
 					c.Up = g3d.GetCell(lv+1, row, column).(*cell.Cell3D)
+				} else {
+					c.Up = nil
 				}
 			}
 		}

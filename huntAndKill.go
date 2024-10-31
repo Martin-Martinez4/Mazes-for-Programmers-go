@@ -11,7 +11,7 @@ import (
 // but when a loop happens look for a unvisited cell with a visited neighbor
 
 func HuntAndKill(sh grid.ShapeHolder) {
-	current := sh.GetShape().RandomCell()
+	current := sh.RandomCell()
 	// grid := sh.GetShape().Grid
 	// rows := sh.GetShape().Rows
 	// columns := sh.GetShape().Columns
