@@ -11,9 +11,10 @@ func BinaryTree(sh grid.ShapeHolder) {
 
 	grid := sh.GetShape()
 
-	for row := 0; row < grid.Rows; row++ {
+	// replace this later
+	for row := 0; row < grid.Rows(); row++ {
 
-		for column := 0; column < grid.Columns; column++ {
+		for column := 0; column < grid.Columns(); column++ {
 			c2, ok := (grid.Grid[row][column]).(*cell.BaseCell)
 			if !ok {
 				return

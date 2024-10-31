@@ -12,9 +12,9 @@ import (
 
 func HuntAndKill(sh grid.ShapeHolder) {
 	current := sh.GetShape().RandomCell()
-	grid := sh.GetShape().Grid
-	rows := sh.GetShape().Rows
-	columns := sh.GetShape().Columns
+	// grid := sh.GetShape().Grid
+	// rows := sh.GetShape().Rows
+	// columns := sh.GetShape().Columns
 
 	for current != nil {
 		unvisitedNeighbors := unvisitedNeighbors(current)
@@ -26,27 +26,31 @@ func HuntAndKill(sh grid.ShapeHolder) {
 		} else {
 			current = nil
 
-			for row := 0; row < rows; row++ {
-				for column := 0; column < columns; column++ {
+			// for row := 0; row < rows; row++ {
+			// 	for column := 0; column < columns; column++ {
 
-					cell := grid[row][column]
+			for c := range sh.EachCell() {
 
-					if cell != nil {
+				// row := c.Row()
+				// column := c.Column()
 
-						visitedNeighbors := visitedNeighbors(cell)
+				if c != nil {
 
-						if (len(cell.Links()) == 0) && (len(visitedNeighbors) > 0) {
-							current = cell
+					visitedNeighbors := visitedNeighbors(c)
 
-							neighbor := visitedNeighbors[rand.Intn(len(visitedNeighbors))]
-							current.Link(neighbor)
+					if (len(c.Links()) == 0) && (len(visitedNeighbors) > 0) {
+						current = c
 
-							break
-						}
+						neighbor := visitedNeighbors[rand.Intn(len(visitedNeighbors))]
+						current.Link(neighbor)
+
+						break
 					}
-
 				}
 			}
+
+			// 	}
+			// }
 		}
 
 	}

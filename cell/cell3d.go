@@ -108,7 +108,7 @@ func (c3D *Cell3D) Distances() *Distances {
 
 			}
 
-			c2, ok := frontier.Pop().(*PolarCell)
+			c2, ok := frontier.Pop().(*Cell3D)
 			if !ok && c2 != nil {
 				return distances
 			}
@@ -117,7 +117,7 @@ func (c3D *Cell3D) Distances() *Distances {
 		}
 
 		frontier = newFrontier
-		c2, ok := frontier.Pop().(*PolarCell)
+		c2, ok := frontier.Pop().(*Cell3D)
 		if !ok && c2 != nil {
 			return distances
 		}
@@ -132,13 +132,16 @@ func (c3D *Cell3D) Neighbors() []Cell {
 	neighs := []Cell{}
 
 	if c3D.North != nil {
-		neighs = append(neighs, c3D.Cw)
+		neighs = append(neighs, c3D.North)
 	}
-	if c3D.Ccw != nil {
-		neighs = append(neighs, c3D.Ccw)
+	if c3D.South != nil {
+		neighs = append(neighs, c3D.South)
 	}
-	if c3D.Inward != nil {
-		neighs = append(neighs, c3D.Inward)
+	if c3D.West != nil {
+		neighs = append(neighs, c3D.West)
+	}
+	if c3D.East != nil {
+		neighs = append(neighs, c3D.East)
 	}
 	if c3D.Up != nil {
 		neighs = append(neighs, c3D.Up)

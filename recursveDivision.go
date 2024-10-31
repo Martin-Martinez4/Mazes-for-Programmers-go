@@ -8,39 +8,43 @@ import (
 )
 
 func RecursveDivision(sh grid.ShapeHolder) {
-	g := sh.GetShape().Grid
 
-	for row := 0; row < len(g); row++ {
-		for column := 0; column < len(g[row]); column++ {
-			c := g[row][column]
-			neighs := c.Neighbors()
+	// for row := 0; row < len(g); row++ {
+	// 	for column := 0; column < len(g[row]); column++ {
+	for c := range sh.EachCell() {
 
-			for n := 0; n < len(neighs); n++ {
-				// may need to add option to not make it bidirectional
-				c.Link(neighs[n])
-			}
+		neighs := c.Neighbors()
+
+		for n := 0; n < len(neighs); n++ {
+			// may need to add option to not make it bidirectional
+			c.Link(neighs[n])
 		}
 	}
 
-	divide(sh, 0, 0, sh.GetShape().Rows, sh.GetShape().Columns)
+	// 	}
+	// }
+
+	divide(sh, 0, 0, sh.Rows(), sh.Columns())
 }
 
 func RecursveDivisionRooms(sh grid.ShapeHolder) {
-	g := sh.GetShape().Grid
 
-	for row := 0; row < len(g); row++ {
-		for column := 0; column < len(g[row]); column++ {
-			c := g[row][column]
-			neighs := c.Neighbors()
+	// for row := 0; row < len(g); row++ {
+	// 	for column := 0; column < len(g[row]); column++ {
+	for c := range sh.EachCell() {
 
-			for n := 0; n < len(neighs); n++ {
-				// may need to add option to not make it bidirectional
-				c.Link(neighs[n])
-			}
+		neighs := c.Neighbors()
+
+		for n := 0; n < len(neighs); n++ {
+			// may need to add option to not make it bidirectional
+			c.Link(neighs[n])
 		}
 	}
 
-	divideWithRooms(sh, 0, 0, sh.GetShape().Rows, sh.GetShape().Columns)
+	// 	}
+	// }
+
+	divideWithRooms(sh, 0, 0, sh.Rows(), sh.Columns())
 }
 
 func divide(sh grid.ShapeHolder, row, column, height, width int) {

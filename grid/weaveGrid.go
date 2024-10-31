@@ -10,15 +10,15 @@ import (
 )
 
 type WeaveGrid struct {
-	Shape      *Shape
+	*Shape
 	UnderCells []*OverUnderCell
 }
 
 func CreateWeaveGrid(rows, columns int) *WeaveGrid {
 
 	wg := &WeaveGrid{Shape: &Shape{
-		Rows:    rows,
-		Columns: columns,
+		rows:    rows,
+		columns: columns,
 		Size:    rows * columns,
 	}}
 
@@ -40,8 +40,8 @@ func (wg *WeaveGrid) ToPNG(filepath string, cellSize int) {
 	grid := wg.GetShape().Grid
 	var inset float32 = 0.1
 
-	imgWidth := cellSize * wg.GetShape().Columns
-	imgHeight := cellSize * wg.GetShape().Rows
+	imgWidth := cellSize * wg.Columns()
+	imgHeight := cellSize * wg.Rows()
 
 	insetInt := int(float32(cellSize) * inset)
 
@@ -134,8 +134,9 @@ func (wg *WeaveGrid) withInset(img *image.RGBA, c *OverUnderCell, cellSize, x, y
 
 func configureWeaveCells(g *Shape) {
 
-	for row := 0; row < g.Rows; row++ {
-		for column := 0; column < g.Columns; column++ {
+	// replace this later
+	for row := 0; row < g.Rows(); row++ {
+		for column := 0; column < g.Columns(); column++ {
 
 			c := g.Grid[row][column]
 
@@ -158,7 +159,7 @@ func configureWeaveCells(g *Shape) {
 					// c2.North = g.grid[row-1][column].(*OverUnderCell)
 				}
 
-				if row < g.Rows-1 {
+				if row < g.Rows()-1 {
 
 					c := g.GetCell(row+1, column)
 					if c == nil {
@@ -182,7 +183,7 @@ func configureWeaveCells(g *Shape) {
 					}
 				}
 
-				if column < g.Columns-1 {
+				if column < g.Columns()-1 {
 					c := g.GetCell(row, column+1)
 					if c == nil {
 
@@ -204,12 +205,12 @@ func (wg *WeaveGrid) TunnelUnder(overCell *OverUnderCell) {
 }
 
 func prepareWeaveGrid(shape *Shape, wg *WeaveGrid) {
-	grid := make([][]cell.Cell, wg.Shape.Rows)
+	grid := make([][]cell.Cell, wg.Rows())
 
-	for row := 0; row < wg.Shape.Rows; row++ {
-		grid[row] = make([]cell.Cell, wg.Shape.Columns)
+	for row := 0; row < wg.Rows(); row++ {
+		grid[row] = make([]cell.Cell, wg.Columns())
 
-		for column := 0; column < wg.Shape.Columns; column++ {
+		for column := 0; column < wg.Columns(); column++ {
 			grid[row][column] = CreateOverCell(row, column, wg)
 		}
 	}

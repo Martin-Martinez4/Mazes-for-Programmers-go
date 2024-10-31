@@ -21,8 +21,8 @@ type HexGrid struct {
 func CreateHexGrid(rows, columns int) *HexGrid {
 
 	hg := &HexGrid{Shape: &Shape{
-		Rows:    rows,
-		Columns: columns,
+		rows:    rows,
+		columns: columns,
 		Size:    rows * columns,
 	}}
 
@@ -41,12 +41,12 @@ func (hg *HexGrid) getShape() *Shape {
 }
 
 func prepareHexGrid(g *Shape) {
-	grid := make([][]cell.Cell, g.Rows)
+	grid := make([][]cell.Cell, g.Rows())
 
-	for row := 0; row < g.Rows; row++ {
-		grid[row] = make([]cell.Cell, g.Columns)
+	for row := 0; row < g.Rows(); row++ {
+		grid[row] = make([]cell.Cell, g.Columns())
 
-		for column := 0; column < g.Columns; column++ {
+		for column := 0; column < g.Columns(); column++ {
 			grid[row][column] = cell.CreateHexCell(row, column)
 		}
 	}
@@ -134,8 +134,8 @@ func (hg *HexGrid) ToPNG(filepath string, size int) {
 	// width := size * 2
 	height := bSize * 2
 
-	imgWidth := int((float64(3*aSize*shape.Columns+aSize) + .5))
-	imgHeight := int(height*float64(hg.Rows) + bSize - .5)
+	imgWidth := int((float64(3*aSize*shape.Columns()+aSize) + .5))
+	imgHeight := int(height*float64(hg.Rows()) + bSize - .5)
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	// wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}

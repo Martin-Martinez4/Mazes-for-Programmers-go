@@ -36,10 +36,9 @@ func Prims(sh grid.ShapeHolder) {
 	grid := sh.GetShape().Grid
 
 	// Give each cell a random weight
-	for row := 0; row < len(grid); row++ {
-		for column := 0; column < len(grid[row]); column++ {
-			grid[row][column].SetWeight(rand.Intn(100))
-		}
+	for c := range sh.EachCell() {
+
+		c.SetWeight(rand.Intn(100))
 	}
 
 	randRow := rand.Intn(len(grid))

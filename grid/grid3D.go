@@ -3,7 +3,7 @@ package grid
 import (
 	"image"
 	"image/color"
-	"math"
+	"math/rand"
 
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/cell"
 	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/draw"
@@ -23,14 +23,14 @@ type Grid3D struct {
 func CreateGrid3D(levels, rows, columns int) *Grid3D {
 
 	g3d := &Grid3D{Shape: &Shape{
-		Rows:    rows,
-		Columns: columns,
+		rows:    rows,
+		columns: columns,
 		Size:    rows * columns,
 	},
 		Levels: levels,
 	}
 
-	prepareHexGrid(g3d.getShape())
+	prepareGrid3D(g3d)
 	configureCells3D(g3d)
 
 	return g3d
@@ -44,17 +44,46 @@ func (g3d *Grid3D) getShape() *Shape {
 	return g3d.Shape
 }
 
+func (g3d *Grid3D) GetCell(level, row, column int) *cell.Cell3D {
+	g := g3d.Grid
+	if (level >= 0 && level < len(g)) &&
+		(row >= 0 && row < len(g[level])) &&
+		(column >= 0 && column < len(g[level][row])) {
+		return g[level][row][column].(*cell.Cell3D)
+	}
+	return nil
+}
+
+func (g3d *Grid3D) RandomCell() cell.Cell {
+
+	g := g3d.Grid
+	// random int [0. rows)
+	// and.Intn(max-min) + min, but min is 0
+	randLevel := rand.Intn(len(g))
+	randRow := rand.Intn(len(g[randLevel]))
+	randColumn := rand.Intn(len(g[randRow]))
+
+	for g[randLevel][randRow][randColumn] == nil {
+
+		randLevel = rand.Intn(len(g))
+		randRow = rand.Intn(len(g[randLevel]))
+		randColumn = rand.Intn(len(g[randRow]))
+	}
+
+	return g[randLevel][randRow][randColumn]
+}
+
 func prepareGrid3D(g3d *Grid3D) {
 	levels := g3d.Levels
 	g := make([][][]cell.Cell, levels)
 
 	for lv := 0; lv < levels; lv++ {
-		g[lv] = make([][]cell.Cell, g3d.Rows)
-		for row := 0; row < g3d.Rows; row++ {
+		g[lv] = make([][]cell.Cell, g3d.Rows())
+		for row := 0; row < g3d.Rows(); row++ {
 
-			g[lv][row] = make([]cell.Cell, g3d.Columns)
+			g[lv][row] = make([]cell.Cell, g3d.Columns())
 
-			for column := 0; column < g3d.Columns; column++ {
+			for column := 0; column < g3d.Columns(); column++ {
 				g[lv][row][column] = cell.CreateCell3D(lv, row, column)
 			}
 		}
@@ -73,32 +102,35 @@ func configureCells3D(g3d *Grid3D) {
 			for column := 0; column < len(grid[row]); column++ {
 				c := grid[lv][row][column].(*cell.Cell3D)
 
+				c.North = g3d.GetCell(lv, row-1, column)
+				c.South = g3d.GetCell(lv, row+1, column)
+				c.West = g3d.GetCell(lv, row, column-1)
+				c.East = g3d.GetCell(lv, row, column+1)
+				c.Down = g3d.GetCell(lv-1, row, column)
+				c.Up = g3d.GetCell(lv+1, row, column)
 			}
 		}
 	}
 }
 
 // this is going to need to be reworked
-func (g3d *Grid3D) ToPNG(filepath string, size int) {
-	shape := g3d.getShape()
+func (g3d *Grid3D) ToPNG(filepath string, size, margin int, inset float32) {
+	grid := g3d.Grid
 
-	aSize := size / 2.0
-	bSize := (float64(size) * math.Sqrt(3) / 2.0)
+	insetInt := int(float32(size) * inset)
 
-	// width := size * 2
-	height := bSize * 2
+	gridWidth := size * g3d.Columns()
+	gridHeight := size * g3d.Rows()
 
-	imgWidth := int((float64(3*aSize*shape.Columns+aSize) + .5))
-	imgHeight := int(height*float64(hg.Rows) + bSize - .5)
-
-	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
-	// wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
-
-	img := image.NewRGBA(image.Rect(0, 0, imgWidth+1, imgHeight+1))
+	imgWidth := gridWidth*g3d.Levels + (g3d.Levels-1)*margin
+	imgHeight := gridHeight
 
 	// give pixels color
 	white := color.RGBA{255, 255, 255, 255}
 	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
+	arrow := color.RGBA{R: 100, G: 20, B: 20, A: 255}
+
+	img := image.NewRGBA(image.Rect(0, 0, imgWidth+2, imgHeight+2))
 
 	for x := 0; x < imgWidth; x++ {
 		for y := 0; y < imgHeight; y++ {
@@ -106,75 +138,102 @@ func (g3d *Grid3D) ToPNG(filepath string, size int) {
 		}
 	}
 
-	// const BACKGROUND = 1
-	// for mode := 0; mode < 2; mode++ {
+	for lv := 0; lv < g3d.Levels; lv++ {
+		for row := 0; row < len(grid[lv]); row++ {
+			for column := 0; column < len(grid[lv][row]); column++ {
+				c := g3d.GetCell(lv, row, column)
 
-	for row := 0; row < len(hg.getShape().Grid); row++ {
-		for column := 0; column < len(hg.getShape().Grid[row]); column++ {
-			cell := hg.GetCell(row, column).(*cell.HexCell)
+				x := lv*(gridWidth+margin) + column*size
+				y := row * size
 
-			cx := size + 3*column*aSize
-			cy := bSize + float64(row)*height
+				if inset > 0 {
+					withInset3D(img, c, size, x, y, insetInt, black)
+				} else {
 
-			if column%2 != 0 {
-				cy += bSize
+					noInset3D(img, c, size, x, y, black)
+				}
+
+				midX := x + size/2
+				midY := y + size/2
+
+				if c.IsLinked(c.Down) {
+					draw.StraightLine2(midX-3, midY, midX-1, midY+2, img, arrow)
+					draw.StraightLine2(midX-3, midY, midX-1, midY-2, img, arrow)
+				}
+
+				if c.IsLinked(c.Up) {
+					draw.StraightLine2(midX+3, midY, midX+1, midY+2, img, arrow)
+					draw.StraightLine2(midX+3, midY, midX+1, midY-2, img, arrow)
+				}
+
 			}
 
-			// f/n -> far/near
-			// n/s/e/w -> north/south/east/west
-			xFW := cx - size
-			xNW := cx - aSize
-			xNE := cx + aSize
-			xFE := cx + size
-
-			// m -> middle
-			yN := int(cy - bSize)
-			yM := int(cy)
-			yS := int(cy + bSize)
-
-			// if mode == BACKGROUND {
-			// 	color := pixels[row][column]
-
-			// 	points := [][]int{
-			// 		{xFW, yM},
-			// 		{xNW, yN},
-			// 		{xNE, yN},
-			// 		{xFE, yM},
-			// 		{xNE, yS},
-			// 		{xNW, yS},
-			// 	}
-
-			// 	// draw line with sliding window?
-			// 	for i := 0;
-			// } else {
-
-			if cell.SouthWest == nil {
-				draw.StraightLine2(xFW, yM, xNW, yS, img, black)
-			}
-			if cell.NorthWest == nil {
-				draw.StraightLine2(xFW, yM, xNW, yN, img, black)
-			}
-			if cell.North == nil {
-
-				draw.StraightLine2(xNW, yN, xNE, yN, img, black)
-			}
-			if !cell.IsLinked(cell.NorthEast) {
-				draw.StraightLine2(xNE, yN, xFE, yM, img, black)
-			}
-			if !cell.IsLinked(cell.SouthEast) {
-				draw.StraightLine2(xFE, yM, xNE, yS, img, black)
-			}
-			if !cell.IsLinked(cell.South) {
-				draw.StraightLine2(xNE, yS, xNW, yS, img, black)
-			}
-			// }
-
-			// }
 		}
-
 	}
 	pixels := imagehandling.PNGDataToPixelSlice(img, imgWidth+1, imgHeight+1)
 
 	imagehandling.WritePNGFromPixels(filepath, pixels)
 
+}
+
+func noInset3D(img *image.RGBA, c *cell.Cell3D, cellSize, x, y int, wall color.RGBA) {
+	x1, y1 := x, y
+	x2 := x1 + cellSize
+	y2 := y1 + cellSize
+
+	if c.North == nil {
+
+		draw.StraightLine2(x1, y1, x2, y1, img, wall)
+	}
+
+	if c.West == nil {
+
+		draw.StraightLine2(x1, y1, x1, y2, img, wall)
+	}
+
+	if !c.IsLinked(c.East) {
+
+		draw.StraightLine2(x2, y1, x2, y2, img, wall)
+	}
+	if !c.IsLinked(c.South) {
+
+		draw.StraightLine2(x1, y2, x2, y2, img, wall)
+	}
+
+}
+
+func withInset3D(img *image.RGBA, c *cell.Cell3D, cellSize, x, y, inset int, wall color.RGBA) {
+	x1, x2, x3, x4, y1, y2, y3, y4 := cellCoordsWithInset(x, y, cellSize, inset)
+
+	if c.IsLinked(c.North) {
+		draw.StraightLine2(x2, y1, x2, y2, img, wall)
+		draw.StraightLine2(x3, y1, x3, y2, img, wall)
+	} else {
+		draw.StraightLine2(x2, y2, x3, y2, img, wall)
+
+	}
+
+	if c.IsLinked(c.South) {
+		draw.StraightLine2(x2, y3, x2, y4, img, wall)
+		draw.StraightLine2(x3, y3, x3, y4, img, wall)
+	} else {
+		draw.StraightLine2(x2, y3, x3, y3, img, wall)
+
+	}
+
+	if c.IsLinked(c.West) {
+		draw.StraightLine2(x1, y2, x2, y2, img, wall)
+		draw.StraightLine2(x1, y3, x2, y3, img, wall)
+	} else {
+		draw.StraightLine2(x2, y2, x2, y3, img, wall)
+
+	}
+
+	if c.IsLinked(c.East) {
+		draw.StraightLine2(x3, y2, x4, y2, img, wall)
+		draw.StraightLine2(x3, y3, x4, y3, img, wall)
+	} else {
+		draw.StraightLine2(x3, y2, x3, y3, img, wall)
+
+	}
 }

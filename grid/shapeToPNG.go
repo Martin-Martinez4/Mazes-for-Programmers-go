@@ -38,11 +38,11 @@ func drawWalls(sh ShapeHolder, pixels [][]*imagehandling.Pixel, wallThickness in
 
 	g := sh.GetShape()
 
-	cellWidth := len(pixels[0]) / g.Columns
-	cellHeight := len(pixels) / g.Rows
+	cellWidth := len(pixels[0]) / g.Columns()
+	cellHeight := len(pixels) / g.Rows()
 	// worry about this later
-	for row := 0; row < g.Rows; row++ {
-		for column := 0; column < g.Columns; column++ {
+	for row := 0; row < g.Rows(); row++ {
+		for column := 0; column < g.Columns(); column++ {
 			var c cell.Cell = g.Grid[row][column]
 			if c == nil {
 				// later fill in or ignore

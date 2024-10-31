@@ -15,13 +15,13 @@ import (
 // Wilson's, Recursive Backtracker, and Aldous-Broder will work with the library in its current state.
 
 type PolarGrid struct {
-	Shape *Shape
+	*Shape
 }
 
 func CreatePolarGrid(rows int) *PolarGrid {
 	shape := &Shape{
-		Rows:    rows,
-		Columns: 1,
+		rows:    rows,
+		columns: 1,
 		Size:    rows * 1,
 	}
 	pg := &PolarGrid{Shape: shape}
@@ -57,7 +57,7 @@ func (pg *PolarGrid) ToPNG(filepath string, cellSize int) {
 	shape := pg.getShape()
 	grid := shape.Grid
 
-	imgSize := 2 * shape.Rows * cellSize
+	imgSize := 2 * pg.Rows() * cellSize
 
 	// background := imagehandling.Pixel{R: 255, G: 255, B: 255, A: 255}
 	wall := imagehandling.Pixel{R: 0, G: 0, B: 0, A: 255}
@@ -75,6 +75,7 @@ func (pg *PolarGrid) ToPNG(filepath string, cellSize int) {
 
 	center := imgSize / 2
 
+	// replace this
 	for row := 1; row < len(pg.getShape().Grid); row++ {
 		for column := 0; column < len(pg.getShape().Grid[row]); column++ {
 
@@ -121,7 +122,7 @@ func (pg *PolarGrid) ToPNG(filepath string, cellSize int) {
 
 func preparePolarGrid(pg *PolarGrid) {
 
-	rs := pg.getShape().Rows
+	rs := pg.Rows()
 
 	rows := make([][]cell.Cell, rs)
 

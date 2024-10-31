@@ -6,8 +6,8 @@ import (
 )
 
 type MaskGrid struct {
-	Shape *Shape
-	Mask  *Mask
+	*Shape
+	Mask *Mask
 }
 
 func CreateMaskGrid(mask *Mask) *MaskGrid {
@@ -20,8 +20,8 @@ func CreateMaskGrid(mask *Mask) *MaskGrid {
 	columns := mask.columns
 
 	shape := &Shape{
-		Rows:    rows,
-		Columns: columns,
+		rows:    rows,
+		columns: columns,
 		Size:    rows * columns,
 	}
 
@@ -40,12 +40,12 @@ func (pg *MaskGrid) GetShape() *Shape {
 }
 
 func prepareMaskGrid(g *Shape, mask *Mask) {
-	grid := make([][]cell.Cell, g.Rows)
+	grid := make([][]cell.Cell, g.Rows())
 
-	for row := 0; row < g.Rows; row++ {
-		grid[row] = make([]cell.Cell, g.Columns)
+	for row := 0; row < g.Rows(); row++ {
+		grid[row] = make([]cell.Cell, g.Columns())
 
-		for column := 0; column < g.Columns; column++ {
+		for column := 0; column < g.Columns(); column++ {
 			if mask.isOn(row, column) {
 
 				grid[row][column] = cell.CreateBaseCell(row, column)

@@ -10,13 +10,13 @@ import (
 )
 
 type PlainGrid struct {
-	Shape *Shape
+	*Shape
 }
 
 func CreatePlainGrid(rows, columns int) *PlainGrid {
 	shape := &Shape{
-		Rows:    rows,
-		Columns: columns,
+		rows:    rows,
+		columns: columns,
 		Size:    rows * columns,
 	}
 
@@ -45,8 +45,8 @@ func (pg *PlainGrid) Png(filepath string, cellSize int, inset float32) {
 
 	grid := pg.GetShape().Grid
 
-	imgWidth := cellSize * pg.GetShape().Columns
-	imgHeight := cellSize * pg.GetShape().Rows
+	imgWidth := cellSize * pg.Columns()
+	imgHeight := cellSize * pg.Rows()
 
 	insetInt := int(float32(cellSize) * inset)
 

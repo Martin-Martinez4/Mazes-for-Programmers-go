@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
-)
+import "github.com/Martin-Martinez4/Mazes-for-Programmers-go/grid"
 
 /*
 	Implement the each cell method to make algorithms work with 2D and 3D mazes.
@@ -80,11 +78,14 @@ func main() {
 	// Eullers(grid2)
 	// grid2.ToPNG("./images/test_output/eullers_test", 50)
 
-	g := grid.CreatePlainGrid(30, 30)
-	RecursveDivision(g)
-	g.ToPNG("./images/test_output/recursve_division", 50)
+	// g := grid.CreatePlainGrid(30, 30)
+	// RecursveDivision(g)
+	// g.ToPNG("./images/test_output/recursve_division", 50)
 
-	g = grid.CreatePlainGrid(30, 30)
-	RecursveDivision(g)
-	g.ToPNG("./images/test_output/recursve_division_rooms", 50)
+	// g = grid.CreatePlainGrid(30, 30)
+	// RecursveDivision(g)
+	// g.ToPNG("./images/test_output/recursve_division_rooms", 50)
+
+	g3d := grid.CreateGrid3D(2, 4, 4)
+	g3d.ToPNG("./images/test_output/grid_3D", 50, 10, .1)
 }

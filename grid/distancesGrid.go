@@ -13,7 +13,7 @@ const STARTPOINT = 64
 
 type DistancesGrid struct {
 	*cell.Distances
-	Shape *Shape
+	*Shape
 }
 
 func CreateDistancesGrid(rows, columns int) *DistancesGrid {

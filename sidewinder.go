@@ -14,9 +14,10 @@ func Sidewinder(sh grid.ShapeHolder) {
 
 	var c cell.Cell
 
-	for row := 0; row < grid.Rows; row++ {
+	// replace this later
+	for row := 0; row < sh.Rows(); row++ {
 
-		for column := 0; column < grid.Columns; column++ {
+		for column := 0; column < sh.Columns(); column++ {
 			c = grid.Grid[row][column]
 			c2, ok := c.(*cell.BaseCell)
 			if !ok {

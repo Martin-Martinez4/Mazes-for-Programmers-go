@@ -12,9 +12,10 @@ func Wilsons(sh grid.ShapeHolder) {
 	unvisited := make([]cell.Cell, sh.GetShape().Size)
 
 	grid := sh.GetShape().Grid
-	rows := sh.GetShape().Rows
-	columns := sh.GetShape().Columns
+	rows := sh.Rows()
+	columns := sh.Columns()
 
+	// replace this later
 	for row := 0; row < rows; row++ {
 		for column := 0; column < columns; column++ {
 			unvisited[(row*columns)+column] = grid[row][column]

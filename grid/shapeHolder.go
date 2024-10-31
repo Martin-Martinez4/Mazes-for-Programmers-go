@@ -10,15 +10,19 @@ type ShapeHolder interface {
 	GetShape() *Shape
 	ToPNG(filepath string, cellSize int)
 	ContentsOf(cell.Cell) string
+	EachCell() <-chan cell.Cell
+	Rows() int
+	Columns() int
 }
 
 func deadEnds(sh ShapeHolder) []cell.Cell {
 	grid := sh.GetShape().Grid
-	rows := sh.GetShape().Rows
-	columns := sh.GetShape().Columns
+	rows := sh.GetShape().Rows()
+	columns := sh.GetShape().Columns()
 
 	deadEnds := []cell.Cell{}
 
+	// replace this later
 	for row := 0; row < rows; row++ {
 		for column := 0; column < columns; column++ {
 			if grid[row][column] == nil {
