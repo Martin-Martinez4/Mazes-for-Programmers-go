@@ -14,6 +14,7 @@ func CreateCubeCell(face, row, column int) *CubeCell {
 	return &CubeCell{
 		PrimeCell: CreatePrimeCell(row, column),
 		face:      face,
+		links:     map[*CubeCell]bool{},
 	}
 }
 

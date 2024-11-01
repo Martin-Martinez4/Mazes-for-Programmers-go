@@ -38,7 +38,7 @@ func (ccg *CubeGrid) ContentsOf(c cell.Cell) string {
 	return " "
 }
 
-func (ccg *CubeGrid) getShape() *Shape {
+func (ccg *CubeGrid) GetShape() *Shape {
 	return ccg.Shape
 }
 
@@ -48,21 +48,9 @@ func (g3d *CubeGrid) GetCell(face, row, column int) cell.Cell {
 	if face < 0 || face >= 6 {
 		return nil
 	}
+	f, r, c := g3d.wrap(face, row, column)
+	return g3d.Grid[f][r][c]
 
-	if row < 0 || row >= len(g3d.Grid[face]) {
-		return nil
-	}
-
-	if column < 0 || column >= len(g3d.Grid[face][row]) {
-		return nil
-	}
-	if face > 0 {
-
-		f, r, c := g3d.wrap(face, row, column)
-		return g3d.Grid[f][r][c]
-	} else {
-		return g3d.Grid[face][row][column]
-	}
 }
 
 func (g3d *CubeGrid) wrap(face, row, column int) (int, int, int) {
@@ -83,7 +71,7 @@ func (g3d *CubeGrid) wrap(face, row, column int) (int, int, int) {
 		case 5:
 			return 1, n, column
 		default:
-			panic("Invalid number of faces")
+			panic("Invalid number of faces row < 0")
 
 		}
 	} else if row >= n+1 {
@@ -101,7 +89,7 @@ func (g3d *CubeGrid) wrap(face, row, column int) (int, int, int) {
 		case 5:
 			return 3, n, n - column
 		default:
-			panic("Invalid number of faces")
+			panic("Invalid number of faces row >- n+1")
 
 		}
 	} else if column < 0 {
@@ -119,7 +107,7 @@ func (g3d *CubeGrid) wrap(face, row, column int) (int, int, int) {
 		case 5:
 			return 0, n, n - row
 		default:
-			panic("Invalid number of faces")
+			panic("Invalid number of faces column < 0")
 
 		}
 	} else if column >= n+1 {
@@ -137,11 +125,12 @@ func (g3d *CubeGrid) wrap(face, row, column int) (int, int, int) {
 		case 5:
 			return 2, n, row
 		default:
-			panic("Invalid number of faces")
+			panic("Invalid number of faces column >= n+1")
 
 		}
 	}
-	panic("Invalid wrap of Cube Cell")
+
+	return face, row, column
 }
 
 func (g3d *CubeGrid) RandomCell() cell.Cell {
@@ -240,7 +229,7 @@ func configureCubeCells(ccg *CubeGrid) {
 // this is going to need to be reworked
 func (ccg *CubeGrid) ToPNG(filepath string, size int, inset float32) {
 
-	// insetInt := int(float32(size) * inset)
+	insetInt := int(float32(size) * inset)
 
 	faceWidth := size * ccg.Rows()
 	faceHeight := size * ccg.Rows()
@@ -248,11 +237,11 @@ func (ccg *CubeGrid) ToPNG(filepath string, size int, inset float32) {
 	imgWidth := 4 * faceWidth
 	imgHeight := 3 * faceHeight
 
-	// offsets := [][]int{{0, 1}, {1, 1}, {2, 1}, {3, 1}, {1, 0}, {1, 2}}
+	offsets := [][]int{{0, 1}, {1, 1}, {2, 1}, {3, 1}, {1, 0}, {1, 2}}
 
 	// give pixels color
 	white := color.RGBA{255, 255, 255, 255}
-	// black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
+	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
 	outline := color.RGBA{R: 50, G: 100, B: 50, A: 255}
 
 	img := image.NewRGBA(image.Rect(0, 0, imgWidth+1, imgHeight+1))
@@ -264,18 +253,19 @@ func (ccg *CubeGrid) ToPNG(filepath string, size int, inset float32) {
 
 	drawOutlines(img, faceWidth, faceHeight, outline)
 
-	// for c := range ccg.EachCell() {
-	// 	cc := c.(*cell.CubeCell)
-	// 	x := offsets[cc.Face()][0]*faceWidth + cc.Column()*size
-	// 	y := offsets[cc.Face()][1]*faceHeight + cc.Row()*size
+	for c := range ccg.EachCell() {
+		cc := c.(*cell.CubeCell)
+		x := offsets[cc.Face()][0]*faceWidth + cc.Column()*size
+		y := offsets[cc.Face()][1]*faceHeight + cc.Row()*size
 
-	// 	if inset > 0 {
+		if inset > 0 {
+			withInsetCube(img, cc, size, x, y, insetInt, black)
+		} else {
 
-	// 	} else {
+			noInsetCube(img, cc, size, x, y, black)
+		}
 
-	// 	}
-
-	// }
+	}
 
 	pixels := imagehandling.PNGDataToPixelSlice(img, imgWidth+1, imgHeight+1)
 
@@ -286,16 +276,83 @@ func (ccg *CubeGrid) ToPNG(filepath string, size int, inset float32) {
 func drawOutlines(img *image.RGBA, height, width int, outline color.RGBA) {
 	// face 0
 
-	draw.Draw(img, image.Rect(0, height, width, height*2), &image.Uniform{color.RGBA{200, 200, 200, 255}}, image.Point{}, draw.Src)
+	draw.Draw(img, image.Rect(0, height, width, height*2), &image.Uniform{color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
 
 	// faces 2 and 3
-	draw.Draw(img, image.Rect(width*2, height, width*4, height*2), &image.Uniform{color.RGBA{200, 200, 200, 255}}, image.Point{}, draw.Src)
+	draw.Draw(img, image.Rect(width*2, height, width*4, height*2), &image.Uniform{color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
 
 	// line between faces 2 and 3
 	d.StraightLine2(width*3, height, width*3, height*2, img, color.RGBA{0, 0, 0, 255})
 
-	draw.Draw(img, image.Rect(width, 0, width*2, height), &image.Uniform{color.RGBA{200, 200, 200, 255}}, image.Point{}, draw.Src)
+	// face 4
+	draw.Draw(img, image.Rect(width, 0, width*2, height), &image.Uniform{color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
 
-	draw.Draw(img, image.Rect(width, height*2, width*2, height*3), &image.Uniform{color.RGBA{200, 200, 200, 255}}, image.Point{}, draw.Src)
+	// face 5
+	draw.Draw(img, image.Rect(width, height*2, width*2, height*3), &image.Uniform{color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
 
+	// face 1
+	draw.Draw(img, image.Rect(width, height, width*2, height*2), &image.Uniform{color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
+
+}
+
+func noInsetCube(img *image.RGBA, c *cell.CubeCell, cellSize, x, y int, wall color.RGBA) {
+	x1, y1 := x, y
+	x2 := x1 + cellSize
+	y2 := y1 + cellSize
+
+	if c.North == nil {
+
+		d.StraightLine2(x1, y1, x2, y1, img, wall)
+	}
+
+	if c.West == nil {
+
+		d.StraightLine2(x1, y1, x1, y2, img, wall)
+	}
+
+	if !c.IsLinked(c.East) {
+
+		d.StraightLine2(x2, y1, x2, y2, img, wall)
+	}
+	if !c.IsLinked(c.South) {
+
+		d.StraightLine2(x1, y2, x2, y2, img, wall)
+	}
+
+}
+
+func withInsetCube(img *image.RGBA, cc *cell.CubeCell, cellSize, x, y, inset int, wall color.RGBA) {
+	x1, x2, x3, x4, y1, y2, y3, y4 := cellCoordsWithInset(x, y, cellSize, inset)
+
+	if cc.IsLinked(cc.North) {
+		d.StraightLine2(x2, y1, x2, y2, img, wall)
+		d.StraightLine2(x3, y1, x3, y2, img, wall)
+	} else {
+		d.StraightLine2(x2, y2, x3, y2, img, wall)
+
+	}
+
+	if cc.IsLinked(cc.South) {
+		d.StraightLine2(x2, y3, x2, y4, img, wall)
+		d.StraightLine2(x3, y3, x3, y4, img, wall)
+	} else {
+		d.StraightLine2(x2, y3, x3, y3, img, wall)
+
+	}
+
+	if cc.IsLinked(cc.West) {
+		d.StraightLine2(x1, y2, x2, y2, img, wall)
+		d.StraightLine2(x1, y3, x2, y3, img, wall)
+	} else {
+		d.StraightLine2(x2, y2, x2, y3, img, wall)
+
+	}
+
+	if cc.IsLinked(cc.East) {
+		d.StraightLine2(x3, y2, x4, y2, img, wall)
+		d.StraightLine2(x3, y3, x4, y3, img, wall)
+	} else {
+		d.StraightLine2(x3, y2, x3, y3, img, wall)
+
+	}
 }

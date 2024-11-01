@@ -5,8 +5,7 @@ import (
 )
 
 /*
-	Implement the each cell method to make algorithms work with 2D and 3D mazes.
-	The 2D one can be implemented on the shape so that it gets inherited.
+	Last thing implemented was the Cube Maze, skipped the cylinder and mobius mazes (seemed boring), I am donw with the book for now
 */
 
 func main() {
@@ -92,6 +91,7 @@ func main() {
 	// RecursiveBacktracking(g3d)
 	// g3d.ToPNG("./images/test_output/grid_3D", 50, 10, .1)
 
-	cgg := grid.CreateCubeGrid(4)
-	cgg.ToPNG("./images/test_output/cube_outline", 50, .1)
+	cgg := grid.CreateCubeGrid(7)
+	RecursiveBacktracking(cgg)
+	cgg.ToPNG("./images/test_output/cube_outline_inset", 50, .1)
 }
